@@ -95,3 +95,107 @@ FROM Customers JOIN Purchases ON Customers.CustomerId = Purchases.CustomerId JOI
     ) AS A ON A.ProductId = Purchases.ProductId
 WHERE Price = maxPrice
 ORDER BY Customers.CustomerId DESC
+
+--HW 1.9
+CREATE TRIGGER BoGo
+    BEFORE INSERT ON Purchases
+    FOR EACH ROW
+    BEGIN
+        SET @PurNum = (SELECT COUNT(CustomerId) FROM Purchases
+                       WHERE ProductId = new.ProductId AND CustomerId = new.CustomerId
+                       GROUP BY CustomerId);
+        IF MOD(@PurNum,2) = 1 THEN
+            SET new.Price = new.Price * 0.7;
+        END IF;
+    END;
+
+INSERT INTO Purchases
+SELECT PurchaseId + 1000, CustomerId, ProductId, Price FROM Purchases;
+INSERT INTO Purchases
+SELECT PurchaseId + 2000, CustomerId, ProductId, Price FROM Purchases;
+INSERT INTO Purchases
+SELECT PurchaseId + 4000, CustomerId, ProductId, Price FROM Purchases;
+
+SELECT * FROM Purchases
+ORDER BY PurchaseId DESC 
+LIMIT 10
+
+
+
+create procedure Result()
+begin
+declare done int default 0;
+declare curr int;
+declare avg_score int;
+declare letter VARCHAR(1);
+declare tit VARCHAR(255);
+declare course_cur cursor for select distinct CRN from Courses;
+declare continue handler for not found set done = 1;
+
+drop table if exists FinalTable;
+create table FinalTable(CRN INT, Title VARCHAR(255), AverageScore INT, Rating VARCHAR(1));
+
+open course_cur;
+repeat
+    fetch course_cur into curr;
+    set avg_score = (select avg(Score) from Enrollments where curr = CRN);
+    set tit = (select distinct Title from Courses where curr = CRN);
+    if (avg_score>=90) then set letter = 'A' ;
+    elseif (avg_score>=80) then set letter = 'B';
+    elseif (avg_score>=70) then set letter = 'C' ;
+    elseif (avg_score>=60) then set letter = 'D' ;
+    else  set letter = 'E';
+    end if;
+    insert into FinalTable values(curr, tit, avg_score, letter);
+until done
+end repeat;
+
+close course_cur;
+
+select distinct Title, Rating from FinalTable order by Rating, Title limit 5;
+end
+
+-- HW1.10
+CREATE PROCEDURE Result()
+BEGIN
+    DECLARE flag INT DEFAULT 0;
+    DECLARE CurrCRN INT;
+    DECLARE Ctitle VARCHAR(255);
+    DECLARE Letter VARCHAR(1);
+    DECLARE avgS REAL;
+    DECLARE CourCur CURSOR FOR SELECT DISTINCT CRN FROM Courses;
+    DECLARE CONTINUE HANDLER FOR NOT FOUND SET flag = 1;
+
+    DROP TABLE IF EXISTS FinalTable;
+    CREATE TABLE FinalTable (
+        CRN INT, 
+        Title VARCHAR(255),
+        AverageScore REAL, 
+        Rating VARCHAR(1) DEFAULT 'A'
+    );
+    
+    OPEN CourCur;
+    
+    REPEAT
+        FETCH CourCur INTO CurrCRN;
+        SET avgS = (SELECT AVG(Score) FROM Enrollments WHERE CurrCRN = CRN);
+        SET Ctitle = (SELECT DISTINCT Title FROM Courses WHERE CurrCRN = CRN);
+        
+        IF avgS >= 90 THEN SET Letter = 'A';
+        ELSEIF avgS >= 80 THEN SET Letter = 'B';
+        ELSEIF avgS >= 70 THEN SET Letter = 'C';
+        ELSEIF avgS >= 60 THEN SET Letter = 'D';
+        ELSE SET Letter = 'E';
+        END IF;
+        
+        INSERT INTO FinalTable
+        VALUES(CurrCRN, Ctitle, avgS, Letter);
+    UNTIL flag
+    END REPEAT;
+    
+    CLOSE CourCur;
+    
+    SELECT DISTINCT Title, Rating FROM FinalTable 
+    ORDER BY Rating, Title
+    LIMIT 5;
+END;
