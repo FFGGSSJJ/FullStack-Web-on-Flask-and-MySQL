@@ -1,6 +1,7 @@
 # system
 .vscode
 .venv
+.DS_Store
 
 # sensitive
 app.yaml
