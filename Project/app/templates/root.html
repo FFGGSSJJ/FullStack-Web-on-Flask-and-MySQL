@@ -29,8 +29,112 @@
         </div>
     </div>
 
-    
+    <!-- Operations Section -->
+    <div class="operations">
+        <button type="button" class="btn btn-outline-info btn-sm" data-bs-toggle="modal"
+            data-bs-target="#create-modal" data-source="Create">Create</button>
+        <button type="button" class="btn btn-outline-info btn-sm" data-bs-toggle="modal"
+        data-bs-target="#update-modal" data-source="Update">Update</button>
+        <button type="button" class="btn btn-outline-info btn-sm" data-bs-toggle="modal"
+        data-bs-target="#search-modal" data-source="search">Search</button>
+        <button type="button" class="btn btn-outline-info btn-sm" data-bs-toggle="modal"
+        data-bs-target="#delete-modal" data-source="Delete">Delete</button>
+    </div>
 
+    <!-- Modal Section -->
+    <!-- Modal for creating -->
+    <div class="modal fade" id="create-modal" tabindex="-1" aria-labelledby="Label" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <div class="input-group mb-3">
+                        <span class="input-group-text" id="task-form-display">Movie Name</span>
+                        <input type="text" class="form-control" placeholder="Please Enter movie name"
+                            aria-label="movie-name" aria-describedby="basic-addon1">
+                    </div>
+                    <div class="input-group mb-3">
+                        <span class="input-group-text" id="task-form-display">Release Time</span>
+                        <input type="date" class="form-control"
+                            aria-label="movie-date" aria-describedby="basic-addon1">
+                    </div>
+                    <div class="input-group mb-3">
+                        <span class="input-group-text" id="task-form-display">Genre</span>
+                        <input type="text" class="form-control" placeholder="Please Enter Genre"
+                            aria-label="movie-genre" aria-describedby="basic-addon1">
+                    </div>
+                </div>
+                
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button id="submit-task" type="button" class="btn btn-primary">Save changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal for updating-->
+    <div class="modal fade" id="update-modal" tabindex="-1" aria-labelledby="Label" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <div class="input-group mb-3">
+                        <span class="input-group-text" id="task-form-display">Movie ID</span>
+                        <input type="number" class="form-control" placeholder="Please Enter Movie ID"
+                            aria-label="movie-id" aria-describedby="basic-addon1">
+                    </div>
+                </div>
+                
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button id="submit-task" type="button" class="btn btn-primary">Save changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal for search -->
+    <div class="modal fade" id="search-modal" tabindex="-1" aria-labelledby="Label" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <div class="input-group mb-3">
+                        <span class="input-group-text" id="task-form-display">Movie ID</span>
+                        <input type="number" class="form-control" placeholder="Please Enter Movie ID"
+                            aria-label="movie-id" aria-describedby="basic-addon1">
+                    </div>
+                </div>
+                
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button id="submit-task" type="button" class="btn btn-primary">Save changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal for delete -->
+    <div class="modal fade" id="delete-modal" tabindex="-1" aria-labelledby="Label" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <div class="input-group mb-3">
+                        <span class="input-group-text" id="task-form-display">Movie ID</span>
+                        <input type="number" class="form-control" placeholder="Please Enter Movie ID"
+                            aria-label="movie-id" aria-describedby="basic-addon1">
+                    </div>
+                </div>
+                
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button id="submit-task" type="button" class="btn btn-primary">Save changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    <!-- Page Link -->
     <div class="options">
         <a href="/">Back to Homepage</a>
     </div>

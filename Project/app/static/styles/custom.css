@@ -145,6 +145,7 @@ hr {
     font-size: 16px;
 }
 
+/* Button for homepage and rootpage*/
 .button {
     display: block;
     width: 30%;
@@ -180,6 +181,11 @@ hr {
     padding-top: 80px;
     padding-right: 70px;
     padding-left: 70px;
+    text-align: center;
+}
+
+.operations {
+    /* padding-top: 80px; */
     text-align: center;
 }
 
