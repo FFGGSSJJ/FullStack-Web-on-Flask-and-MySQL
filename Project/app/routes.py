@@ -52,3 +52,8 @@ def homepage():
     # items = db_helper.fetch_todo()
     # return render_template("index.html", items=items)
     return render_template("index.html")
+
+@app.route("/advancedop")
+def rootpage():
+    """ returns the advancedop page """
+    return render_template("root.html")
