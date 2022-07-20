@@ -1,6 +1,7 @@
 # system
 .vscode
 .venv
+.flaskenv
 .DS_Store
 
 # sensitive
