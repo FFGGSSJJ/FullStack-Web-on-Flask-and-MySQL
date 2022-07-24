@@ -29,19 +29,19 @@
         </div>
     </div>
 
-    <!-- Operations Section -->
+    <!-- Operation Button Section -->
     <div class="operations">
         <button type="button" class="btn btn-outline-info btn-sm" data-bs-toggle="modal"
             data-bs-target="#create-modal" data-source="Create">Create</button>
         <button type="button" class="btn btn-outline-info btn-sm" data-bs-toggle="modal"
-        data-bs-target="#update-modal" data-source="Update">Update</button>
+            data-bs-target="#update-modal" data-source="Update">Update</button>
         <button type="button" class="btn btn-outline-info btn-sm" data-bs-toggle="modal"
-        data-bs-target="#search-modal" data-source="search">Search</button>
+            data-bs-target="#search-modal" data-source="search">Search</button>
         <button type="button" class="btn btn-outline-info btn-sm" data-bs-toggle="modal"
-        data-bs-target="#delete-modal" data-source="Delete">Delete</button>
+            data-bs-target="#delete-modal" data-source="Delete">Delete</button>
     </div>
 
-    <!-- Modal Section -->
+    <!-- Modal Section triggered by buttons -->
     <!-- Modal for creating -->
     <div class="modal fade" id="create-modal" tabindex="-1" aria-labelledby="Label" aria-hidden="true">
         <div class="modal-dialog">
@@ -49,24 +49,24 @@
                 <div class="modal-body">
                     <div class="input-group mb-3">
                         <span class="input-group-text" id="task-form-display">Movie Name</span>
-                        <input type="text" class="form-control" placeholder="Please Enter movie name"
+                        <input type="text" class="input-name" placeholder="Please Enter movie name"
                             aria-label="movie-name" aria-describedby="basic-addon1">
                     </div>
                     <div class="input-group mb-3">
                         <span class="input-group-text" id="task-form-display">Release Time</span>
-                        <input type="date" class="form-control"
-                            aria-label="movie-date" aria-describedby="basic-addon1">
+                        <input type="date" class="input-time" aria-label="movie-date" aria-describedby="basic-addon1">
                     </div>
                     <div class="input-group mb-3">
                         <span class="input-group-text" id="task-form-display">Genre</span>
-                        <input type="text" class="form-control" placeholder="Please Enter Genre"
+                        <input type="text" class="input-genre" placeholder="Please Enter Genre"
                             aria-label="movie-genre" aria-describedby="basic-addon1">
                     </div>
                 </div>
                 
+                <!-- Modal Footer button -->
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button id="submit-task" type="button" class="btn btn-primary">Save changes</button>
+                    <button id="create-task" type="button" class="btn btn-primary">Create</button>
                 </div>
             </div>
         </div>
