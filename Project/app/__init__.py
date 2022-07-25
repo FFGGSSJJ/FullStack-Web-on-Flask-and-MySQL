@@ -41,7 +41,9 @@ def init_connection_engine():
 
 
 app = Flask(__name__)
+app.secret_key = "super secret key"
 db = init_connection_engine()
+
 
 # To prevent from using a blueprint, we use a cyclic import
 # This also means that we need to place this import here

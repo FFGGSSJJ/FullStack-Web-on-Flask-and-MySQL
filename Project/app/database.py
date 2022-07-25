@@ -11,7 +11,7 @@ def fetch_movie() -> list:
 
     conn = db.connect()
     print("Starting database")
-    query_results = conn.execute("Select * from movie_info;").fetchall()
+    query_results = conn.execute("Select * from movie_info LIMIT 400;").fetchall()
     conn.close()
     todo_list = []
     for result in query_results:
@@ -47,9 +47,13 @@ def update_movie_entry(movie_id: int, data: dict) -> None:
     conn = db.connect()
     query = 'Update movie_info set '
     for attr, value in data.items():
+        if attr == 'overview' or attr == 'tagline' or attr == 'title':
+            query += '{} = "{}", '.format(attr, value)
+            continue
         query += '{} = {}, '.format(attr, value)
     if query[-2:] == ', ':
         query = query[:-2]+' where movie_id = {};'.format(movie_id)
+        print(query)
         conn.execute(query)
         conn.close()
     return
@@ -89,7 +93,7 @@ def remove_movie_by_id(movie_id: int) -> None:
 def search_movie_by_title(data: dict) -> list:
      """ Search entries based on title """
      conn = db.connect()
-     query = 'Select * From movie_info where title like "%{}%";'.format(data['title'])
+     query = 'Select * From movie_info where title like "%%{}%%" LIMIT 10;'.format(data['title'])
      print(query)
      query_results = conn.execute(query).fetchall()
      conn.close()

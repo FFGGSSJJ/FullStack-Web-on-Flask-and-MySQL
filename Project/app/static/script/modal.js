@@ -31,6 +31,22 @@ $(document).ready(function () {
         const taskID = button.data('source') // Extract info from data-* attributes
     })
 
+    // show update modal
+    $('#update-modal').on('show.bs.modal', function (event) {
+        console.log("Update Modal opened");
+        const button = $(event.relatedTarget) // Button that triggered the modal
+        const mID = button.data('movieid')
+        const mTitle = button.data('title')
+        const mOverview = button.data('overview')
+        const mTagline = button.data('tagline')
+
+        const modal = $(this)
+        modal.find('.display-name').val(mTitle)
+        modal.find('.display-info').val(mOverview)
+        modal.find('.display-tagline').val(mTagline)
+    })
+
+
     // function of create modal
     $('#create-task').click(function () {
         console.log('Create Task clicked');
@@ -63,7 +79,33 @@ $(document).ready(function () {
             url: '/search_movie', 
             contentType: 'application/json;charset=UTF-8',
             data: JSON.stringify({
-                'title': $('#search-modal').find('.input-name')
+                'movie_id': $('#search-modal').find('.input-id').val(),
+                'title': $('#search-modal').find('.input-name').val()
+            }),
+            success: function (res) {
+                console.log(res.response)
+                // location.reload();
+                location.href = "/search_result";
+            },
+            error: function () {
+                console.log('Error');
+            }
+        });
+    });
+    
+
+    // function of update modal
+    $('#update-task').click(function () {
+        console.log('Update Task clicked');
+        console.log($('.updatebtn').data('movieid'));
+        $.ajax({
+            type: 'POST',
+            url: '/edit/' + $('.updatebtn').data('movieid'),
+            contentType: 'application/json;charset=UTF-8',
+            data: JSON.stringify({
+                'title': $('#update-modal').find('.display-name').val(),
+                'overview': $('#update-modal').find('.display-info').val(),
+                'tagline': $('#update-modal').find('.display-tagline').val()
             }),
             success: function (res) {
                 console.log(res.response)
@@ -73,6 +115,7 @@ $(document).ready(function () {
                 console.log('Error');
             }
         });
+        
     });
 
 

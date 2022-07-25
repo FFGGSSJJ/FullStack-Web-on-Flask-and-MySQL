@@ -25,7 +25,6 @@
             <!-- Title & Subtitle -->
             <h1>For Movies</h1>
             <p class="subtitle">"Time to find a best movie for yourself"</p>
-
         </div>
     </div>
 
@@ -37,6 +36,12 @@
             data-bs-target="#search-modal" data-source="Search">Search</button>
     </div>
 
+    <!-- Page Link -->
+    <div class="options">
+        <a href="/">Back to Homepage</a>
+        <br/>
+        <a href="/search_result">Result</a>
+    </div>
     <!-- Modal Section triggered by buttons -->
     <!-- Modal for creating -->
     <div class="modal fade" id="create-modal" tabindex="-1" aria-labelledby="Label" aria-hidden="true">
@@ -45,21 +50,21 @@
                 <div class="modal-body">
                     <div class="input-group mb-3">
                         <span class="input-group-text" id="movie-name-display">Movie Title</span>
-                        <input type="text" class="input-name" placeholder="Please Enter movie name"
+                        <input type="text" class="form-control input-name" placeholder="Please Enter movie name"
                             aria-label="movie-name" aria-describedby="basic-addon1">
                     </div>
                     <div class="input-group mb-3">
                         <span class="input-group-text" id="movie-time-display">Release Date</span>
-                        <input type="date" class="input-date" aria-label="movie-date" aria-describedby="basic-addon1">
+                        <input type="date" class="form-control input-date" aria-label="movie-date" aria-describedby="basic-addon1">
                     </div>
                     <div class="input-group mb-3">
                         <span class="input-group-text" id="movie-info-display">Overview</span>
-                        <input type="text" class="input-info" placeholder="Movie Overview"
+                        <input type="text" class="form-control input-info" placeholder="Movie Overview"
                             aria-label="movie-info" aria-describedby="basic-addon1">
                     </div>
                     <div class="input-group mb-3">
                         <span class="input-group-text" id="movie-tag-display">Tagline</span>
-                        <input type="text" class="input-tagline" placeholder="Movie Tagline"
+                        <input type="text" class="form-control input-tagline" placeholder="Movie Tagline"
                             aria-label="movie-tag" aria-describedby="basic-addon1">
                     </div>
                 </div>
@@ -80,8 +85,18 @@
                 <div class="modal-body">
                     <div class="input-group mb-3">
                         <span class="input-group-text" id="movie-name-display">Movie Title</span>
-                        <input type="number" class="form-control" placeholder="Please Enter Movie ID"
-                            aria-label="movie-id" aria-describedby="basic-addon1">
+                        <input type="text" class="form-control display-name" placeholder="Please Enter Movie Name"
+                            aria-label="movie-name" aria-describedby="basic-addon1">
+                    </div>
+                    <div class="input-group mb-3">
+                        <span class="input-group-text" id="movie-info-display">Overview</span>
+                        <input type="text" class="form-control display-info" placeholder="Movie Overview"
+                            aria-label="movie-info" aria-describedby="basic-addon1">
+                    </div>
+                    <div class="input-group mb-3">
+                        <span class="input-group-text" id="movie-tag-display">Tagline</span>
+                        <input type="text" class="form-control display-tagline" placeholder="Movie Tagline"
+                            aria-label="movie-tag" aria-describedby="basic-addon1">
                     </div>
                 </div>
                 
@@ -99,15 +114,20 @@
             <div class="modal-content">
                 <div class="modal-body">
                     <div class="input-group mb-3">
+                        <span class="input-group-text" id="movie-id-display">Movie ID</span>
+                        <input type="number" class="form-control input-id" placeholder="Please Enter Movie ID"
+                            aria-label="movie-id" aria-describedby="basic-addon1">
+                    </div>
+                    <div class="input-group mb-3">
                         <span class="input-group-text" id="movie-name-display">Movie Title</span>
-                        <input type="text" class="input-name" placeholder="Please Enter Movie Name"
+                        <input type="text" class="form-control input-name" placeholder="Please Enter Movie Name"
                             aria-label="movie-name" aria-describedby="basic-addon1">
                     </div>
                 </div>
                 
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button id="search-task" type="button" class="btn btn-primary">Confirm</button>
+                    <button id="search-task" type="button" class="btn btn-primary" href="/search_result">Confirm</button>
                 </div>
             </div>
         </div>
@@ -138,8 +158,8 @@
                     <!-- <td>{{item.poster_path}}</td> -->
                     
                     <!-- Update and Delete -->
-                    <td><button type="button" class="btn btn-outline-info btn-sm" data-bs-toggle="modal"
-                            data-bs-target="#update-modal" data-source="{{item.movie_id}}" data-content="{{item.overview}}"><i
+                    <td><button type="button" class="btn btn-outline-info btn-sm updatebtn" data-bs-toggle="modal"
+                            data-bs-target="#update-modal" data-movieid="{{item.movie_id}}" data-title="{{item.title}}" data-overview="{{item.overview}}" data-tagline="{{item.tagline}}"><i
                                 class="fa fa-pen fa-1" aria-hidden="true"></i></button></td>
 
                     <td><button class="btn btn-outline-secondary btn-sm remove" data-source="{{item.movie_id}}"
@@ -149,17 +169,6 @@
 
             </tbody>
         </table>
-    </div>
-
-
-
-
-
-
-
-    <!-- Page Link -->
-    <div class="options">
-        <a href="/">Back to Homepage</a>
     </div>
 
 

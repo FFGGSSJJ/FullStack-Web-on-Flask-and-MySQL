@@ -51,6 +51,7 @@ def search_movie():
     return jsonify(result)
 
 
+# Page routes
 @app.route("/search_result")
 def search_result():
     """ display search result """
