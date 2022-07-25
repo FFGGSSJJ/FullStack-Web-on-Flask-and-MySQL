@@ -46,6 +46,7 @@ def search_movie():
     """ search movie"""
     data = request.get_json()
     searched_list = db_helper.search_movie_by_title(data)
+    session.clear()
     session['movie_list'] = searched_list
     result = {'success': True, 'response': 'Done'}
     return jsonify(result)
@@ -63,6 +64,7 @@ def search_result():
 def advanced_0():
     """ advanced_query_0 """
     query_list = db_helper.advanced_query_0()        # advanced one
+    session.clear()
     session['adv_query_0'] = query_list
     result = {'success': True, 'response': 'Done'}
     return jsonify(result)
@@ -79,6 +81,7 @@ def advanced_result_0():
 def advanced_1():
     """ advanced_query_1 """
     query_list = db_helper.advanced_query_1()
+    session.clear()
     session['adv_query_1'] = query_list
     result = {'success': True, 'response': 'Done'}
     return jsonify(result)

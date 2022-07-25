@@ -184,7 +184,7 @@ def advanced_query_1() -> list:
     for result in query_result:
         item = {
             "genre_name": result[0],
-            "ave_genre_rating": result[1],
+            "ave_genre_rating": round(result[1],2),
         }
         result_list.append(item)
 
