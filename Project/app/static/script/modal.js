@@ -118,6 +118,44 @@ $(document).ready(function () {
         
     });
 
+    // function of advanced search 0
+    $('#adv0').click(function () {
+        console.log('Advanced Search 0 clicked');
+        $.ajax({
+            type: 'POST',
+            url: '/adv_query_0',
+            contentType: 'application/json;charset=UTF-8',
+            data: JSON.stringify({
+            }),
+            success: function (res) {
+                console.log(res.response)
+                location.href = '/adv_result_0';
+            },
+            error: function () {
+                console.log('Error');
+            }
+        });
+    });
+
+    // function of advanced search 1
+    $('#adv1').click(function () {
+        console.log('Advanced Search 1 clicked');
+        $.ajax({
+            type: 'POST',
+            url: '/adv_query_1',
+            contentType: 'application/json;charset=UTF-8',
+            data: JSON.stringify({
+            }),
+            success: function (res) {
+                console.log(res.response)
+                location.href = '/adv_result_1';
+            },
+            error: function () {
+                console.log('Error');
+            }
+        });
+    });
+
 
     // function of delete modal
     $('.remove').click(function () {

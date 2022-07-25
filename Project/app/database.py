@@ -1,4 +1,5 @@
 """Defines all the functions related to the database"""
+# from asyncio.windows_events import NULL
 from app import db
 
 
@@ -96,8 +97,9 @@ def remove_movie_by_id(movie_id: int) -> None:
 def search_movie_by_title(data: dict) -> list:
     """ Search entries based on title """
     conn = db.connect()
-    query = 'Select * From movie_info where title like "%%{}%%" LIMIT 40;'.format(
-        data['title'])
+    query = 'Select * From movie_info where title like "%%{}%%" LIMIT 10;'.format(data['title'])
+    # if (data['movie_id'] != NULL):
+    #     query = 'Select * From movie_info where movie_id = {} LIMIT 40;'.format(data['movie_id'])
     print(query)
     query_results = conn.execute(query).fetchall()
     conn.close()
