@@ -2,6 +2,7 @@
 .vscode
 .venv
 .flaskenv
+.newflaskvenv
 .DS_Store
 
 # sensitive
