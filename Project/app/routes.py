@@ -59,34 +59,37 @@ def search_result():
     return render_template("search.html", items=searched_list)
 
 
-# @app.route("/adv_query_0", methods=['POST'])
-# def advanced():
-#     """ advanced_query_0 """
-#     query_list = db_helper.advanced_query_0()        # advanced one
-#     session['adv_query_0'] = query_list
-#     result = {'success': True, 'response': 'Done'}
-#     return jsonify(result)
-
-# @app.route("/adv_result_0")
-# def advanced_result1():
-#     """ returns rendered homepage """
-#     query_list = session.get('adv_query_0', None)
-#     return render_template("adv_result_0.html", items=query_list)
+@app.route("/adv_query_0", methods=['POST'])
+def advanced_0():
+    """ advanced_query_0 """
+    query_list = db_helper.advanced_query_0()        # advanced one
+    session['adv_query_0'] = query_list
+    result = {'success': True, 'response': 'Done'}
+    return jsonify(result)
 
 
-# @app.route("/adv_query_1", methods=['POST'])
-# def advanced1():
-#     """ advanced_query_1 """
-#     query_list = db_helper.advanced_query_1()
-#     session['adv_query_1'] = query_list
-#     result = {'success': True, 'response': 'Done'}
-#     return jsonify(result)
+@app.route("/adv_result_0")
+def advanced_result_0():
+    """ returns rendered homepage """
+    query_list = session.get('adv_query_0', None)
+    return render_template("adv_result_0.html", items=query_list)
 
-# @app.route("/adv_result_1")
-# def advanced_result1():
-#     """ returns rendered homepage """
-#     query_list = session.get('adv_query_1', None)
-#     return render_template("adv_result_1.html", items=query_list)
+
+@app.route("/adv_query_1", methods=['POST'])
+def advanced_1():
+    """ advanced_query_1 """
+    query_list = db_helper.advanced_query_1()
+    session['adv_query_1'] = query_list
+    result = {'success': True, 'response': 'Done'}
+    return jsonify(result)
+
+
+@app.route("/adv_result_1")
+def advanced_result_1():
+    """ returns rendered homepage """
+    query_list = session.get('adv_query_1', None)
+    return render_template("adv_result_1.html", items=query_list)
+
 
 @app.route("/")
 def homepage():
