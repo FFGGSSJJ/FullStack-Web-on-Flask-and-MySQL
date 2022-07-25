@@ -1,8 +1,9 @@
 $(document).ready(function () {
     // example: https://getbootstrap.com/docs/4.2/components/modal/
-    // show modal
+    
+    // show create modal
     $('#create-modal').on('show.bs.modal', function (event) {
-        console.log("Modal opened");
+        console.log("Create Modal opened");
         const button = $(event.relatedTarget) // Button that triggered the modal
         const taskID = button.data('source') // Extract info from data-* attributes
         const content = button.data('content') // Extract info from data-* attributes
@@ -23,17 +24,29 @@ $(document).ready(function () {
         }
     })
 
+    // show search modal
+    $('#search-modal').on('show.bs.modal', function (event) {
+        console.log("Search Modal opened");
+        const button = $(event.relatedTarget) // Button that triggered the modal
+        const taskID = button.data('source') // Extract info from data-* attributes
+    })
 
+
+
+
+    // function of create modal
     $('#create-task').click(function () {
-        /* tID might be undefined */
-        const tID = $('#task-form-display').attr('taskID');
         console.log('Create Task clicked');
         $.ajax({
             type: 'POST',
-            url: tID ? '/edit/' + tID : '/create',
+            url: '/create',
             contentType: 'application/json;charset=UTF-8',
             data: JSON.stringify({
-                'description': $('#task-modal').find('.form-control').val()
+                'movie_id': 0,
+                'title': $('#create-modal').find('.input-name').val(),
+                'release_date': $('#create-modal').find('.input-date').val(),
+                'overview': $('#create-modal').find('.input-info').val(),
+                'tagline': $('#create-modal').find('.input-tagline').val()
             }),
             success: function (res) {
                 console.log(res.response)
@@ -45,6 +58,17 @@ $(document).ready(function () {
         });
     });
 
+    // function of search modal
+    $('#search-task').click(function () {
+        console.log('Search Task clicked');
+        $.ajax({
+            type: 'POST',
+            url: '/'
+        });
+    });
+
+
+    // function of delete modal
     $('.remove').click(function () {
         const remove = $(this)
         $.ajax({

@@ -44,11 +44,11 @@ def create():
 @app.route("/")
 def homepage():
     """ returns rendered homepage """
-    # items = db_helper.fetch_movie()
-    # return render_template("index.html", items=items)
-    return render_template("index.html")
+    items = db_helper.fetch_movie()
+    return render_template("index.html", items=items)
 
 @app.route("/advancedop")
 def rootpage():
     """ returns rendered rootpage """
-    return render_template("root.html")
+    items = db_helper.fetch_movie()
+    return render_template("root.html", items=items)
