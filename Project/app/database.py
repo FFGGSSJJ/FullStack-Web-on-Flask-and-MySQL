@@ -85,3 +85,28 @@ def remove_movie_by_id(movie_id: int) -> None:
     conn.execute(query)
     print("Removing movie by id {}".format(movie_id))
     conn.close()
+
+def search_movie_by_title(data: dict) -> list:
+     """ Search entries based on title """
+     conn = db.connect()
+     query = 'Select * From movie_info where title like "%{}%";'.format(data['title'])
+     print(query)
+     query_results = conn.execute(query).fetchall()
+     conn.close()
+     movie_list = []
+     for result in query_results:
+         item = {
+             "movie_id": result[0],
+             "title": result[1],
+             "imdb_id": result[2],
+             "release_date": result[3],
+             "overview": result[4],
+             "tagline": result[5],
+             "homepage": result[6],
+             "poster_path": result[7],
+             "popularity": result[8],
+             "revenue": result[9],
+         }
+         movie_list.append(item)
+
+     return movie_list

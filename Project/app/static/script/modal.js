@@ -31,9 +31,6 @@ $(document).ready(function () {
         const taskID = button.data('source') // Extract info from data-* attributes
     })
 
-
-
-
     // function of create modal
     $('#create-task').click(function () {
         console.log('Create Task clicked');
@@ -63,7 +60,18 @@ $(document).ready(function () {
         console.log('Search Task clicked');
         $.ajax({
             type: 'POST',
-            url: '/'
+            url: '/search_movie', 
+            contentType: 'application/json;charset=UTF-8',
+            data: JSON.stringify({
+                'title': $('#search-modal').find('.input-name')
+            }),
+            success: function (res) {
+                console.log(res.response)
+                location.reload();
+            },
+            error: function () {
+                console.log('Error');
+            }
         });
     });
 
