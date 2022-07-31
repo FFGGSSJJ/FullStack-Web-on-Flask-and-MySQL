@@ -41,6 +41,7 @@ def init_connection_engine():
 
 
 app = Flask(__name__)
+# declare the secret key for the flask instance
 app.secret_key = "super secret key"
 db = init_connection_engine()
 

@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>iMovie Login</title>
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
+    <link rel="icon" href="{{ url_for('static', filename='img/movie.png') }}">
+
+
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet"
+        integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles/login.css') }}">
+
+</head>
+
+<body>
+    <div class="options">
+        <a href="/advancedop">Advanced Operations</a>
+        <a href="/login">Login</a>
+    </div>
+    <!-- partial:index.partial.html -->
+    <div class="box-form">
+        <div class="left">
+            <div class="overlay">
+                <h1>For Movies.</h1>
+                <p>LogIn To Explore the Movies for yourself.</p>
+            </div>
+        </div>
+
+
+        <div class="right">
+            <h5>Login</h5>
+            <p>Don't have an account? <a href="/register">Creat Your Account</a> it takes less than a minute</p>
+            <div class="inputs">
+                <input type="text" placeholder="user name">
+                <br>
+                <input type="password" placeholder="password">
+            </div>
+
+            <br><br>
+
+            <div class="remember-me--forget-password">
+                <!-- Angular -->
+                <p><a href="/passwordrecover">forget password?</a></p>
+            </div>
+
+            <br>
+            <button>Login</button>
+        </div>
+
+    </div>
+    <!-- partial -->
+
+</body>
+
+</html>

@@ -51,15 +51,6 @@ def search_movie():
     result = {'success': True, 'response': 'Done'}
     return jsonify(result)
 
-
-# Page routes
-@app.route("/search_result")
-def search_result():
-    """ display search result """
-    searched_list = session.get('movie_list', None)
-    return render_template("search.html", items=searched_list)
-
-
 @app.route("/adv_query_0", methods=['POST'])
 def advanced_0():
     """ advanced_query_0 """
@@ -69,14 +60,6 @@ def advanced_0():
     result = {'success': True, 'response': 'Done'}
     return jsonify(result)
 
-
-@app.route("/adv_result_0")
-def advanced_result_0():
-    """ returns rendered homepage """
-    query_list = session.get('adv_query_0', None)
-    return render_template("adv_result_0.html", items=query_list)
-
-
 @app.route("/adv_query_1", methods=['POST'])
 def advanced_1():
     """ advanced_query_1 """
@@ -85,6 +68,20 @@ def advanced_1():
     session['adv_query_1'] = query_list
     result = {'success': True, 'response': 'Done'}
     return jsonify(result)
+
+# Page routes
+@app.route("/search_result")
+def search_result():
+    """ display search result """
+    searched_list = session.get('movie_list', None)
+    return render_template("search.html", items=searched_list)
+
+
+@app.route("/adv_result_0")
+def advanced_result_0():
+    """ returns rendered homepage """
+    query_list = session.get('adv_query_0', None)
+    return render_template("adv_result_0.html", items=query_list)
 
 
 @app.route("/adv_result_1")
@@ -106,3 +103,13 @@ def rootpage():
     """ returns rendered rootpage """
     items = db_helper.fetch_movie()
     return render_template("root.html", items=items)
+
+@app.route("/login")
+def loginpage():
+    """ returns rendered login page """
+    return render_template("login.html")
+
+@app.route("/register")
+def registerpage():
+    " returns rendered register page """
+    return render_template("register.html")
