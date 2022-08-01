@@ -13,7 +13,7 @@ def fetch_movie() -> list:
     conn = db.connect()
     print("Starting database")
     query_results = conn.execute(
-        "Select * from movie_info LIMIT 400;").fetchall()
+        "Select * from movie_info LIMIT 10;").fetchall()
     conn.close()
     movie_list = []
     for result in query_results:

@@ -123,28 +123,6 @@ hr {
     margin: auto;
 }
 
-/* Search Regions */
-.search-region {
-    margin-bottom: 66px;
-}
-
-.field {
-    width: 70%;
-    height: 54px;
-    padding-right: 20px;
-    padding-left: 20px;
-    float: left;
-    border: 0px solid #000;
-    border-top-left-radius: 2px;
-    border-bottom-left-radius: 2px;
-    background-color: hsla(0, 0%, 100%, 0.7);
-    box-shadow: inset 0 0 8px 0 transparent, inset 0 0 0 1px rgb(0 0 0 / 16%);
-    -webkit-transition: box-shadow 150ms ease;
-    transition: box-shadow 150ms ease;
-    color: #262c46;
-    font-size: 16px;
-}
-
 /* Button for homepage and rootpage*/
 .button {
     display: block;

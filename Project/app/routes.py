@@ -70,11 +70,17 @@ def advanced_1():
     return jsonify(result)
 
 # Page routes
+@app.route("/search_page")
+def search_page():
+    """ display search result """
+    return render_template("search.html")
+
+
 @app.route("/search_result")
 def search_result():
     """ display search result """
     searched_list = session.get('movie_list', None)
-    return render_template("search.html", items=searched_list)
+    return render_template("search_result.html", items=searched_list)
 
 
 @app.route("/adv_result_0")
