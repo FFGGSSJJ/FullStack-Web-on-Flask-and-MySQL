@@ -88,6 +88,11 @@ def search_page():
     """ display search result """
     return render_template("search.html")
 
+@app.route("/userpage")
+def userpage():
+    """ display user page """
+    return render_template("userpage.html")
+
 
 @app.route("/search_result")
 def search_result():
@@ -141,7 +146,9 @@ def register():
     try:
         data = request.get_json()
         db_helper.insert_user(data)
-        result = {'success': True, 'response': 'Done'}
+        session.clear()
+        session['verify_user'] = data
+        result = {'success': True, 'response': 'Done', 'userid': data['userID']}
     except:
         result = {'success': False, 'response': 'Something went wrong'}
     return jsonify(result)
@@ -157,10 +164,10 @@ def verify_user():
             result = {'success': False, 'response': 'User not found'}
         else:
             print("User found")
+            print(user['userID'])
+            print(user['account_passwd'])
+            render_template('userpage.html', items=user)
             result = {'success': True, 'response': 'Done'}
-        session.clear()
-        session['verify_user'] = user
-        result = {'success': True, 'response': 'Done'}
     except:
         result = {'success': False, 'response': 'Something went wrong'}
     return jsonify(result)
