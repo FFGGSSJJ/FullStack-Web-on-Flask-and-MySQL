@@ -36,17 +36,26 @@
                 <input type="text" placeholder="user name">
                 <br>
                 <input type="password" placeholder="password">
+                <br>
+                <input type="number" placeholder="age">
             </div>
 
             <br><br>
 
             <br>
-            <button>Create Account</button>
+            <button type="button" class="btn btn-outline-info btn-sm" id="loginbtn" data-source="Login">Create Account</button>
         </div>
 
     </div>
     <!-- partial -->
 
 </body>
+
+<!-- Scripts Section -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-b5kHyXgcpbZJO/tY9Ul7kGkf1S0CWuKcCD38l8YkeH8z8QjE0GmW1gYU5S9FOnJ0"
+    crossorigin="anonymous"></script>
+<script src="{{ url_for('static', filename='script/logreg.js') }}"></script>
 
 </html>
