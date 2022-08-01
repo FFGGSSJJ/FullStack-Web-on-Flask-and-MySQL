@@ -75,7 +75,6 @@ def insert_new_movie(data: dict) -> int:
     query_results = [x for x in query_results]
     movie_id = query_results[0][0] + 1
     data['movie_id'] = movie_id
-    attr_tuple = tuple([attr for attr in data.keys()])
     value_tuple = tuple([value for value in data.values()])
     query = 'Insert Into movie_info (movie_id, title, release_date, overview, tagline) VALUES {};'.format(
         value_tuple)
@@ -97,7 +96,8 @@ def remove_movie_by_id(movie_id: int) -> None:
 def search_movie_by_title(data: dict) -> list:
     """ Search entries based on title """
     conn = db.connect()
-    query = 'Select * From movie_info where title like "%%{}%%" LIMIT 10;'.format(data['title'])
+    query = 'Select * From movie_info where title like "%%{}%%" LIMIT 10;'.format(
+        data['title'])
     # if (data['movie_id'] != NULL):
     #     query = 'Select * From movie_info where movie_id = {} LIMIT 40;'.format(data['movie_id'])
     print(query)
@@ -184,8 +184,34 @@ def advanced_query_1() -> list:
     for result in query_result:
         item = {
             "genre_name": result[0],
-            "ave_genre_rating": round(result[1],2),
+            "ave_genre_rating": round(result[1], 2),
         }
         result_list.append(item)
 
     return result_list
+
+
+def insert_user(data: dict) -> None:
+    conn = db.connect()
+    query_results = conn.execute("Select max(userID) from account_info;")
+    query_results = [x for x in query_results]
+    movie_id = query_results[0][0] + 1
+    data['userID'] = movie_id
+    query = 'Insert Into account_info (account_name, account_passwd, age) VALUES ("{}", "{}", "{}","{}");'.format(
+        data['userID'], data["name"], data["password"], data["age"])
+    conn.execute(query)
+    conn.close()
+    return data
+
+
+def search_user(data: dict) -> None:
+    conn = db.connect()
+    query = "Select Count(*) From account_info Where userID='{}' and account_passwd='{}';".format(
+        data["userID"], data["account_passwd"])
+    count = conn.execute(query)
+    count = count.fetchall()[0][0]
+    conn.close()
+    if count == 1:
+        return data
+    else:
+        return {}

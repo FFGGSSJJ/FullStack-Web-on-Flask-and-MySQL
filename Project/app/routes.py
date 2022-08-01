@@ -51,6 +51,7 @@ def search_movie():
     result = {'success': True, 'response': 'Done'}
     return jsonify(result)
 
+
 @app.route("/adv_query_0", methods=['POST'])
 def advanced_0():
     """ advanced_query_0 """
@@ -59,6 +60,7 @@ def advanced_0():
     session['adv_query_0'] = query_list
     result = {'success': True, 'response': 'Done'}
     return jsonify(result)
+
 
 @app.route("/adv_query_1", methods=['POST'])
 def advanced_1():
@@ -110,12 +112,38 @@ def rootpage():
     items = db_helper.fetch_movie()
     return render_template("root.html", items=items)
 
+
 @app.route("/login")
 def loginpage():
     """ returns rendered login page """
     return render_template("login.html")
 
+
 @app.route("/register")
 def registerpage():
     " returns rendered register page """
     return render_template("register.html")
+
+
+@app.route("/register", methods=['POST'])
+def register():
+    try:
+        data = request.get_json()
+        db_helper.insert_user(data)
+        result = {'success': True, 'response': 'Done'}
+    except:
+        result = {'success': False, 'response': 'Something went wrong'}
+    return jsonify(result)
+
+
+@app.route("/check_user", methods=['POST'])
+def check_user():
+    try:
+        data = request.get_json()
+        user = db_helper.search_user(data)
+        session.clear()
+        session['adv_query_1'] = user
+        result = {'success': True, 'response': 'Done'}
+    except:
+        result = {'success': False, 'response': 'Something went wrong'}
+    return jsonify(result)
