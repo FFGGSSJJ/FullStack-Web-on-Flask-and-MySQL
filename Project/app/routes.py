@@ -83,6 +83,8 @@ def logincheck():
 
 
 # Page routes
+
+
 @app.route("/search_page")
 def search_page():
     """ display search result """
@@ -171,3 +173,11 @@ def verify_user():
     except:
         result = {'success': False, 'response': 'Something went wrong'}
     return jsonify(result)
+
+
+@app.route("/genre_fliter", methods=['POST'])
+def genre_fliter():
+    """ returns rendered rootpage """
+    data = request.get_json()
+    items = db_helper.genre_fliter(data)
+    return render_template("genre_fliter.html", items=items)

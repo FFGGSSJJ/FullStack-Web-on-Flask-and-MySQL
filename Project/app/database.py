@@ -215,3 +215,40 @@ def search_user(data: dict) -> None:
         return data
     else:
         return {}
+
+
+def genre_fliter(data: dict) -> list:
+    conn = db.connect()
+    print("Starting genre_fliter")
+
+    genre_list = []
+    for genre in data:
+        if data[genre] == 1:
+            genre_list.append(genre)
+
+    query_results = conn.execute(
+        "Select genre_id from genre where genre_name in '{}';".format(tuple(genre_list))).fetchall()
+    genre_id_list = [result[0] for result in query_results]
+    query_results = conn.execute("Select distinct movie_id from movie_genre where genre_id in '{}';".format(
+        tuple(genre_id_list))).fetchall()
+    movie_id_list = [result[0] for result in query_results]
+    query_results = conn.execute(
+        "Select * from movie_info where movie_id in '{}' limit 20;".format(tuple(movie_id_list))).fetchall()
+    conn.close()
+    movie_list = []
+    for result in query_results:
+        item = {
+            "movie_id": result[0],
+            "title": result[1],
+            "imdb_id": result[2],
+            "release_date": result[3],
+            "overview": result[4],
+            "tagline": result[5],
+            "homepage": result[6],
+            "poster_path": result[7],
+            "popularity": result[8],
+            "revenue": result[9],
+        }
+        movie_list.append(item)
+
+    return movie_list
