@@ -13,7 +13,7 @@
         integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl" crossorigin="anonymous">
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.css">
-    <link rel="stylesheet" href="{{ url_for('static', filename='styles/custom.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles/homepage.css') }}">
 
     <!-- Font Scripts -->
     <script src="https://ajax.googleapis.com/ajax/libs/webfont/1.6.26/webfont.js" type="text/javascript"></script>
@@ -24,38 +24,54 @@
 <!-- Main Content in Main Page -->
 <body>
 
-    <!-- Header Section -->
-    <div class="header">
-        <div class="container w-container">
-            <!-- Title & Subtitle -->
-            <h1>For Movies</h1>
-            <p class="subtitle">"Time to find a best movie for yourself"</p>
-            <!-- Search Region -->
-            <div class="search-region">
-                
-                <form name="name" data-name="input_name" id="name" method="get" class="w-clearfix">
-                    <input type="text" class="field w-input" maxlength="256" name="input_movie"
-                        data-name="movie_name" placeholder="Enter movie name to search" id="field" required="" />
-                    <input type="submit" value="Search" data-wait="Please wait..." class="button w-button" />
-                </form>
+    <!-- Top Bar Section -->
+    <div class="navbar">
+        <div class="navbar-container">
+            <div class="logo-container">
+                <h1 class="logo">iMovie</h1>
             </div>
-
+            <div class="menu-container">
+                <ul class="menu-list">
+                </ul>
+            </div>
+            
         </div>
     </div>
 
-    <div class="options">
+    <!-- Left sidebar Section -->
+    <div class="sidebar">
+        <i type="button" class="left-menu-icon fas fa-search"></i>
+        <i type="button" class="left-menu-icon fas fa-home"></i>
+        <i type="button" class="left-menu-icon fas fa-users"></i>
+        <i type="button" class="left-menu-icon fas fa-bookmark"></i>
+    </div>
+
+    <!-- Main Section -->
+    <div class="featured-content" style="background: linear-gradient(to bottom, #ddd0b7dd 10%, #ddd0b7 100%), url('static/img/background.jpg');">
+        <div class="featured-title">For Movies</div>
+        <p class="featured-desc">People go to watch the movies to feel and to escape from reality, movies transport us to a different time, place or situation we may never be able to experience. The emotions we feel when we're engaged by a movie is what makes us come back for more</p>
+    </div>
+
+    <!-- Recommended Movie Section -->
+    <div class="movie-list-container">
+        <h1 class="movie-list-title">RECOMMEND FOR YOU</h1>
+        <div class="movie-list-wrapper">
+            <div class="movie-list">
+                <div class="movie-list-item">
+                    <img class="movie-list-item-img" src="static/img/background.jpg" alt="">
+                    <span class="movie-list-item-title">Breakfast At Tiffany's</span>
+                    <button class="movie-list-item-button">Check</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- <div class="options">
         <a href="/advancedop">Advanced Operations</a>
         <a href="/login">Login</a>
-    </div>
+    </div> -->
 
-
-
-    <!-- Footer Section -->
-    <footer class="footer">
-        <div class="container">
-            <p class="text-muted"><small>iMovie Developed By CS411 Team-33</small></p>
-        </div>
-    </footer>
 </body>
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
