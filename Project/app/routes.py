@@ -132,13 +132,13 @@ def register():
     return jsonify(result)
 
 
-@app.route("/check_user", methods=['POST'])
-def check_user():
+@app.route("/verify_user", methods=['POST'])
+def verify_user():
     try:
         data = request.get_json()
         user = db_helper.search_user(data)
         session.clear()
-        session['adv_query_1'] = user
+        session['verify_user'] = user
         result = {'success': True, 'response': 'Done'}
     except:
         result = {'success': False, 'response': 'Something went wrong'}

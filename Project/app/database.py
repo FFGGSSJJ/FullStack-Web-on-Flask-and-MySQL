@@ -197,7 +197,7 @@ def insert_user(data: dict) -> None:
     query_results = [x for x in query_results]
     movie_id = query_results[0][0] + 1
     data['userID'] = movie_id
-    query = 'Insert Into account_info (account_name, account_passwd, age) VALUES ("{}", "{}", "{}","{}");'.format(
+    query = 'Insert Into account_info (userID, account_name, account_passwd, age) VALUES ("{}", "{}", "{}","{}");'.format(
         data['userID'], data["name"], data["password"], data["age"])
     conn.execute(query)
     conn.close()
