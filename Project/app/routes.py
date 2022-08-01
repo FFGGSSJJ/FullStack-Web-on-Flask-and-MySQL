@@ -95,7 +95,7 @@ def advanced_result_1():
 def homepage():
     """ returns rendered homepage """
     items = db_helper.fetch_movie()
-    return render_template("index.html", items=items)
+    return render_template("homepage.html", items=items)
 
 
 @app.route("/advancedop")

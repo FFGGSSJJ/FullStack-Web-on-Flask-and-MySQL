@@ -8,7 +8,7 @@ html {
 }
 
 body {
-    background-color: #e0ddd7;
+    background-color: #ddd0b7b0;
     font-family: 'Open Sans', sans-serif;
     color: #fff;
     font-size: 14px;
@@ -193,7 +193,7 @@ hr {
 .header {
     height: 100%;
     padding-top: 104px;
-    background-color: #e0ddd7;
+    /* background-color: #e0ddd7; */
     text-align: center;
 }
 
