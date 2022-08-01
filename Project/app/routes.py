@@ -71,6 +71,17 @@ def advanced_1():
     result = {'success': True, 'response': 'Done'}
     return jsonify(result)
 
+@app.route("/logincheck", methods=['POST'])
+def logincheck():
+    """ logincheck """
+    data = request.get_json()
+    userinfo = db_helper.search_user(data)
+    if userinfo == {}:
+        return jsonify({'success': False,'response': 'Incorrect username or password'})
+    else:
+        return jsonify({'success': True,'response': 'User info was found.'})
+
+
 # Page routes
 
 
@@ -143,6 +154,12 @@ def verify_user():
     try:
         data = request.get_json()
         user = db_helper.search_user(data)
+        if user == {}:
+            print("User not found")
+            result = {'success': False, 'response': 'User not found'}
+        else:
+            print("User found")
+            result = {'success': True, 'response': 'Done'}
         session.clear()
         session['verify_user'] = user
         result = {'success': True, 'response': 'Done'}
