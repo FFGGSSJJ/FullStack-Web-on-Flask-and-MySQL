@@ -55,11 +55,43 @@
     <!-- Recommended Movie Section -->
     <div class="movie-list-container">
         <h1 class="movie-list-title">RECOMMEND FOR YOU</h1>
+        <p class="movie-list-subtitle">Based on your favorite</p>
+        <div class="movie-list-wrapper">
+            <div class="movie-list">
+                {% for item in items %}
+                <div class="movie-list-item">
+                    <img class="movie-list-item-img" src="static/img/background.jpg" alt="">
+                    <span class="movie-list-item-title">{{item.title}}</span>
+                    <button class="movie-list-item-button" data-movieid="{{item.movie_id}}">Check</button>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Rating Section -->
+    <div class="movie-list-container">
+        <h1 class="movie-list-title">HIGH RATING MOVIES</h1>
+        <p class="movie-list-subtitle">Most people's favorite</p>
         <div class="movie-list-wrapper">
             <div class="movie-list">
                 <div class="movie-list-item">
                     <img class="movie-list-item-img" src="static/img/background.jpg" alt="">
-                    <span class="movie-list-item-title">Breakfast At Tiffany's</span>
+                    <span class="movie-list-item-title">Breakfast at Tiffany's</span>
+                    <button class="movie-list-item-button">Check</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    
+    <div class="movie-list-container">
+        <h1 class="movie-list-title">GENRE 1</h1>
+        <div class="movie-list-wrapper">
+            <div class="movie-list">
+                <div class="movie-list-item">
+                    <img class="movie-list-item-img" src="static/img/background.jpg" alt="">
+                    <span class="movie-list-item-title">Breakfast at Tiffany's</span>
                     <button class="movie-list-item-button">Check</button>
                 </div>
             </div>
@@ -67,10 +99,10 @@
     </div>
 
 
-    <!-- <div class="options">
+    <div class="options">
         <a href="/advancedop">Advanced Operations</a>
         <a href="/login">Login</a>
-    </div> -->
+    </div>
 
 </body>
 

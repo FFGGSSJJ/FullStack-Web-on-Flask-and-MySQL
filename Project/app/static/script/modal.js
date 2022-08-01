@@ -173,28 +173,39 @@ $(document).ready(function () {
         });
     });
 
-    $('.state').click(function () {
-        const state = $(this)
-        const tID = state.data('source')
-        const new_state = null;
-        if (state.text() === "In Progress") {
-            new_state = "Complete"
-        } else if (state.text() === "Complete") {
-            new_state = "Todo"
-        } else if (state.text() === "Todo") {
-            new_state = "In Progress"
-        }
+// functions in Homepage
+    // sidebar function
+    $('.fa-search').click(function () {
+        console.log('Search page clicked');
+        location.href = '/search_page';
+    });
 
+    $('.fa-home').click(function () {
+        console.log('Home page clicked');
+        location.href = '/';
+    });
+
+    $('.fa-users').click(function () {
+        console.log('User page clicked');
+        location.href = '/';
+    });
+
+    $('.fa-bookmark').click(function () {
+        console.log('Bookmark page clicked');
+        location.href = '/';
+    });
+
+
+    // function of check movie record
+    $('.movie-list-item-button').click(function () {
+        console.log('check clicked');
+        console.log($('.movie-list-item-button').data('movieid'));
         $.ajax({
             type: 'POST',
-            url: '/edit/' + tID,
-            contentType: 'application/json;charset=UTF-8',
-            data: JSON.stringify({
-                'status': new_state
-            }),
+            url: '/check_movie_record' + $('.movie-list-item-button').data('movieid'),
             success: function (res) {
-                console.log(res)
-                location.reload();
+                console.log(res.response)
+                location.href = '/movieintro';
             },
             error: function () {
                 console.log('Error');
