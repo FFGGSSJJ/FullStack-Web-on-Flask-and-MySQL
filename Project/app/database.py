@@ -428,8 +428,15 @@ def fetch_watch_by_userid(data: dict) -> list:
     if (query_results == []):
         return []
     movie_id_list = [result[0] for result in query_results]
-    query_results = conn.execute(
-        "Select * from movie_info where movie_id in {} limit 20;".format(tuple(movie_id_list))).fetchall()
+    if len(movie_id_list) == 1:
+        query_results = conn.execute(
+            "Select * from movie_info where movie_id = {} limit 20;".format(movie_id_list[0])).fetchall()
+    elif len(movie_id_list) > 1:
+        query_results = conn.execute(
+            "Select * from movie_info where movie_id in {} limit 20;".format(tuple(movie_id_list))).fetchall()
+    else:
+        conn.close()
+        return []
     conn.close()
     movie_list = []
     for result in query_results:
