@@ -467,15 +467,21 @@ def search_user_by_id(data: dict) -> None:
     query = "Select * From account_info Where userID='{}';".format(
         data["userID"])
     result = conn.execute(query).fetchall()[0]
+    genre_list = []
+    for index in result[5:8]:
+        if index != None:
+            genre_list.append(genre_dict[index])
+        else:
+            genre_list.append('')
     user = {
         "userID": result[0],
         "account_name": result[1],
         "account_passwd": result[2],
         "age": result[3],
         "account_type": result[4],
-        "tag1": genre_dict[result[5]],
-        "tag2": genre_dict[result[6]],
-        "tag3": genre_dict[result[7]],
+        "tag1": genre_list[0],
+        "tag2": genre_list[1],
+        "tag3": genre_list[2],
     }
     conn.close()
     return user
@@ -530,6 +536,8 @@ def fetch_prerecommendations(userid) -> dict:
         query_results = conn.execute(
             "Select * from movie_info order by popularity desc LIMIT 20;").fetchall()
         movie_list = []
+        print("\n\n****************\n\n\n")
+        print(query_results)
         query_results = query_results[11:]
         for result in query_results:
             query = conn.execute(
