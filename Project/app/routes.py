@@ -181,7 +181,10 @@ def genre_filter():
     """ returns rendered rootpage """
     data = request.get_json()
     items = db_helper.genre_filter(data)
-    return render_template("search_result.html", items=items)
+    session.clear()
+    session['movie_list'] = items
+    searched_list = session.get('movie_list', None)
+    return render_template("search_result.html", items=searched_list)
 
 # add new comment
 # input is userID, movie_id, rating, msg,

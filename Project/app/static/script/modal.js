@@ -247,7 +247,6 @@ $(document).ready(function () {
                     'War': $('#War').is(":checked") ? 1:0
                 }),
                 success: function (res) {
-                    console.log(res.response)
                     location.href = '/search_result';
                 },
                 error: function () {
