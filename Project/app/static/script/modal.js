@@ -236,7 +236,7 @@ $(document).ready(function () {
             console.log("Genre Filter");
             $.ajax({
                 type: 'POST',
-                url: '/genre_fliter',
+                url: '/genre_filter',
                 contentType: 'application/json;charset=UTF-8',
                 data: JSON.stringify({
                     'Animation': $('#Animation').is(":checked") ? 1:0,
