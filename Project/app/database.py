@@ -526,6 +526,37 @@ def fetch_prerecommendations(userid) -> dict:
     query_results = conn.execute(query).fetchall()
     print("\n\n\n\n\n")
     print(query_results)
+    if query_results == []:
+        query_results = conn.execute(
+            "Select * from movie_info order by popularity desc LIMIT 20;").fetchall()
+        movie_list = []
+        query_results = query_results[11:]
+        for result in query_results:
+            query = conn.execute(
+                "Select genre_id from movie_genre where movie_id = '{}';".format(result[0])).fetchall()
+            genre_list = [q[0] for q in query]
+            url = "https://api.themoviedb.org/3/movie/{}?api_key=8265bd1679663a7ea12ac168da84d2e8&language=en-US".format(
+                result[0])
+            data = requests.get(url)
+            data = data.json()
+            poster_path = data['poster_path']
+            full_path = "https://image.tmdb.org/t/p/original/" + poster_path
+            item = {
+                "movie_id": result[0],
+                "title": result[1],
+                "imdb_id": result[2],
+                "release_date": result[3],
+                "overview": result[4],
+                "tagline": result[5],
+                "homepage": result[6],
+                "poster_path": full_path,
+                "popularity": result[8],
+                "revenue": result[9],
+                "genres": genre_list
+            }
+            movie_list.append(item)
+            conn.close()
+            return movie_list, 1
     conn.close()
     pre_recommendations = {}
     for result in query_results:
@@ -539,7 +570,7 @@ def fetch_prerecommendations(userid) -> dict:
             pre_recommendations[item[0]] = {item[2]: item[1]}
         else:
             pre_recommendations[item[0]][item[2]] = item[1]
-    return pre_recommendations
+    return pre_recommendations, 0
 
 # top level fuinction
 
@@ -550,7 +581,9 @@ def fetch_recommendations(user_id) -> list:
         A list
     """
     recommendations = []
-    data = fetch_prerecommendations(user_id)
+    data, mode = fetch_prerecommendations(user_id)
+    if mode == 1:
+        return data
     top_user = similar_users(user_id)[0][0]
     items = data[top_user]
 
