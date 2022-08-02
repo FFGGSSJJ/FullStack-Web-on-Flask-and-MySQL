@@ -381,7 +381,7 @@ def fetch_comment_by_movieid(data: dict) -> list:
     conn = db.connect()
     print("Starting comment")
     query_results = conn.execute(
-        "select a.account_name, c.rating, c.adding_date, c.msg from (Select * from comments where movie_id = '{}') as c natural join account_info as a limit 20;".format(data['movie_id'])).fetchall()
+        "select a.account_name, c.rating, c.adding_date, c.msg from (Select * from comments where movie_id = '{}') as c natural join account_info as a limit 10;".format(data['movie_id'])).fetchall()
     conn.close()
     comments_list = []
     for result in query_results:
@@ -406,9 +406,9 @@ def insert_watch(data: dict) -> int:
         "Select max(watch_id) from watch_list;").fetchall()
     watch_id = query_results[0][0] + 1
     data['watch_id'] = watch_id
-    data['watch_add_date'] = datetime.now()
+    data['watch_add_date'] = str(datetime.now())
     value_tuple = tuple([value for value in data.values()])
-    query = 'Insert Into movie_info (userID, movie_id, watch_id, watch_add_date) VALUES {};'.format(
+    query = 'Insert Into watch_list (userID, movie_id, watch_id, watch_add_date) VALUES {};'.format(
         value_tuple)
     conn.execute(query)
     print("Inserting watch by id: {}".format(watch_id))
@@ -425,6 +425,8 @@ def fetch_watch_by_userid(data: dict) -> list:
     print("Starting watch")
     query_results = conn.execute(
         "Select distinct movie_id from watch_list where userID = '{}'limit 20;".format(data['userID'])).fetchall()
+    if (query_results == []):
+        return []
     movie_id_list = [result[0] for result in query_results]
     query_results = conn.execute(
         "Select * from movie_info where movie_id in {} limit 20;".format(tuple(movie_id_list))).fetchall()
