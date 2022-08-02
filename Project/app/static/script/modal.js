@@ -196,7 +196,7 @@ $(document).ready(function () {
     });
 
 
-    // function of check movie record
+    // function of movie record
     $('.movie-list-item-button').click(function () {
         console.log('check clicked');
         console.log($('.movie-list-item-button').data('movieid'));
@@ -212,5 +212,50 @@ $(document).ready(function () {
             }
         });
     });
+
+// functions in Search Page
+    $('#search-btn').click(function () {
+        console.log('Search clicked');
+        if ($('#field').val() != ""){
+            $.ajax({
+                type: 'POST',
+                url: '/search_movie',
+                contentType: 'application/json;charset=UTF-8',
+                data: JSON.stringify({
+                    'title': $('#field').val()
+                }),
+                success: function (res) {
+                    console.log(res.response)
+                    location.href = '/search_result';
+                },
+                error: function () {
+                    console.log('Error');
+                }
+            });
+        } else {
+            console.log("Genre Filter");
+            $.ajax({
+                type: 'POST',
+                url: '/genre_fliter',
+                contentType: 'application/json;charset=UTF-8',
+                data: JSON.stringify({
+                    'Animation': $('#Animation').is(":checked") ? 1:0,
+                    'Comedy': $('#Comedy').is(":checked") ? 1:0,
+                    'Adventure': $('#Adventure').is(":checked") ? 1:0,
+                    'Action': $('#Action').is(":checked") ? 1:0,
+                    'Romance': $('#Romance').is(":checked") ? 1:0,
+                    'War': $('#War').is(":checked") ? 1:0
+                }),
+                success: function (res) {
+                    console.log(res.response)
+                    location.href = '/search_result';
+                },
+                error: function () {
+                    console.log('Error');
+                }
+            });
+        }
+    });
+
 
 });

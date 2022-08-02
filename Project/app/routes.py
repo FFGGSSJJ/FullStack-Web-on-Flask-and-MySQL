@@ -84,8 +84,6 @@ def logincheck():
 
 
 # Page routes
-
-
 @app.route("/search_page")
 def search_page():
     """ display search result """
@@ -180,7 +178,7 @@ def genre_fliter():
     """ returns rendered rootpage """
     data = request.get_json()
     items = db_helper.genre_fliter(data)
-    return render_template("genre_fliter.html", items=items)
+    return render_template("search_result.html", items=items)
 
 
 @app.route("/create_comment", methods=['POST'])
