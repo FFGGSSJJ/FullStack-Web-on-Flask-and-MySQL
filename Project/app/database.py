@@ -267,13 +267,13 @@ def insert_user(data: dict) -> None:
     i = 0
     genre_list = []
     for genre, value in data.items():
-        if genre == "name" or genre == "password" or genre == "age":
+        if genre == "name" or genre == "password" or genre == "age" or genre == 'account_type' or genre == 'userID':
             continue
         if value == 1 and i < 3:
             genre_list.append(genre)
             i = i+1
     print(genre_list)
-    data['tags'] = [get_tag(genre) for genre in genre_list]
+    data['tags'] = [get_tag(genre)[0] for genre in genre_list]
     print(data['tags'])
     if len(genre_list) == 1:
         query = 'Insert Into account_info (userID, account_name, account_passwd, age, account_type, tag1) VALUES ({}, "{}", "{}",{},{},{});'.format(
