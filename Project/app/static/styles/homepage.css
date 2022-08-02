@@ -99,7 +99,7 @@ body {
 }
 
 .checkbox {
-  width: 50px;
+  width: 100px;
   height: 30px;
   position: relative;
   display: block;
@@ -193,7 +193,7 @@ body {
 
 .featured-content {
   /* padding-top: 0px; */
-  padding-left: 50px;
+  padding-left: 600px;
   height: 40vh;
   
 }
@@ -207,7 +207,7 @@ body {
 
 .featured-desc {
   font-family: 'Open Sans', sans-serif;
-  width: 1000px;
+  width: 450px;
   color: rgb(41, 40, 40);
   margin: 30px 0;
 }
