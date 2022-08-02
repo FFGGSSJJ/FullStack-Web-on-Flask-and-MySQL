@@ -12,7 +12,6 @@ genre_dict = {16: "Animation", 35: "Comedy", 10751: "Family", 12: "Adventure", 2
 
 def fetch_movie() -> list:
     """Reads all tasks listed in the todo table
-
     Returns:
         A list of dictionaries
     """
@@ -52,7 +51,6 @@ def fetch_movie() -> list:
 
 def fetch_movie_ranking() -> list:
     """Reads all tasks listed in the todo table
-
     Returns:
         A list of dictionaries
     """
@@ -92,11 +90,9 @@ def fetch_movie_ranking() -> list:
 
 def update_movie_entry(movie_id: int, data: dict) -> None:
     """Updates task description based on given `task_id`
-
     Args:
         task_id (int): Targeted task_id
         text (str): Updated description
-
     Returns:
         None
     """
@@ -119,7 +115,6 @@ def update_movie_entry(movie_id: int, data: dict) -> None:
 
 def insert_new_movie(data: dict) -> int:
     """Insert new movie.
-
     Returns: The movie_id for the inserted entry
     """
 
@@ -355,7 +350,6 @@ def genre_filter(data: dict) -> list:
 
 def insert_comment(data: dict) -> int:
     """Insert new comment.
-
     Returns: The comment ID for the inserted entry
     """
 
@@ -398,7 +392,6 @@ def fetch_comment_by_movieid(data: dict) -> list:
 
 def insert_watch(data: dict) -> int:
     """Insert new comment.
-
     Returns: The comment ID for the inserted entry
     """
 
