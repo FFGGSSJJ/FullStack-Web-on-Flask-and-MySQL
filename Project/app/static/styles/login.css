@@ -7,6 +7,21 @@ body {
   color: #333333;
 }
 
+.checkrow {
+  padding-top: 10px;
+  width: 100%;
+  /* display: flex; */
+  /* justify-content: space-evenly; */
+  align-items: center;
+}
+
+.checkbox {
+  width: 150px;
+  height: 30px;
+  position: relative;
+  display: block;
+}
+
 .box-form {
   margin: 0 auto;
   width: 80%;

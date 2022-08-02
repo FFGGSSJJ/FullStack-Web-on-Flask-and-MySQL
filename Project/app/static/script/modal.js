@@ -199,10 +199,15 @@ $(document).ready(function () {
     // function of movie record
     $('.movie-list-item-button').click(function () {
         console.log('check clicked');
-        console.log($('.movie-list-item-button').data('movieid'));
+        const button = $(this) // Button that triggered the modal
+        const id = button.data('movieid')
         $.ajax({
             type: 'POST',
-            url: '/check_movie_record' + $('.movie-list-item-button').data('movieid'),
+            url: '/movie_info',
+            contentType: 'application/json;charset=UTF-8',
+            data: JSON.stringify({
+                'movie_id': id
+            }),
             success: function (res) {
                 console.log(res.response)
                 location.href = '/movieintro';
