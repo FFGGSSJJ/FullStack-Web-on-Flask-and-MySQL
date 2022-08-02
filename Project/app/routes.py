@@ -71,15 +71,16 @@ def advanced_1():
     result = {'success': True, 'response': 'Done'}
     return jsonify(result)
 
+
 @app.route("/logincheck", methods=['POST'])
 def logincheck():
     """ logincheck """
     data = request.get_json()
     userinfo = db_helper.search_user(data)
     if userinfo == {}:
-        return jsonify({'success': False,'response': 'Incorrect username or password'})
+        return jsonify({'success': False, 'response': 'Incorrect username or password'})
     else:
-        return jsonify({'success': True,'response': 'User info was found.'})
+        return jsonify({'success': True, 'response': 'User info was found.'})
 
 
 # Page routes
@@ -174,3 +175,35 @@ def genre_fliter():
     data = request.get_json()
     items = db_helper.genre_fliter(data)
     return render_template("genre_fliter.html", items=items)
+
+
+@app.route("/create_comment", methods=['POST'])
+def create_comment():
+    """ recieves post requests to add new task """
+    data = request.get_json()
+    db_helper.insert_comment(data)
+    result = {'success': True, 'response': 'Done'}
+    return jsonify(result)
+
+
+@app.route("/movie_comment", methods=['POST'])
+def get_comment_by_movie():
+    data = request.get_json()
+    items = db_helper.fetch_comment_by_movieid(data)
+    return render_template("movie_comment.html", items=items)
+
+
+@app.route("/create_watchlist_item", methods=['POST'])
+def create_watchlist_item():
+    """ recieves post requests to add new task """
+    data = request.get_json()
+    db_helper.insert_watch(data)
+    result = {'success': True, 'response': 'Done'}
+    return jsonify(result)
+
+
+@app.route("/user_watchlist", methods=['POST'])
+def get_comment_by_user():
+    data = request.get_json()
+    items = db_helper.fetch_watch_by_userid(data)
+    return render_template("user_watchlist.html", items=items)

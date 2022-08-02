@@ -1,6 +1,7 @@
 """Defines all the functions related to the database"""
 # from asyncio.windows_events import NULL
 from app import db
+from datetime import datetime
 
 
 def fetch_movie() -> list:
@@ -62,12 +63,9 @@ def update_movie_entry(movie_id: int, data: dict) -> None:
 
 
 def insert_new_movie(data: dict) -> int:
-    """Insert new task to todo table.
+    """Insert new movie.
 
-    Args:
-        text (str): Task description
-
-    Returns: The task ID for the inserted entry
+    Returns: The movie_id for the inserted entry
     """
 
     conn = db.connect()
@@ -193,8 +191,9 @@ def advanced_query_1() -> list:
 
 def insert_user(data: dict) -> None:
     conn = db.connect()
-    query_results = conn.execute("Select max(userID) from account_info;")
-    query_results = [x for x in query_results]
+    query_results = conn.execute(
+        "Select max(userID) from account_info;").fetchall()
+    # query_results = [x for x in query_results]
     movie_id = query_results[0][0] + 1
     data['userID'] = movie_id
     query = 'Insert Into account_info (userID, account_name, account_passwd, age) VALUES ("{}", "{}", "{}","{}");'.format(
@@ -251,4 +250,99 @@ def genre_fliter(data: dict) -> list:
         }
         movie_list.append(item)
 
+    return movie_list
+
+
+def insert_comment(data: dict) -> int:
+    """Insert new comment.
+
+    Returns: The comment ID for the inserted entry
+    """
+
+    conn = db.connect()
+    query_results = conn.execute(
+        "Select max(comment_id) from comments;").fetchall()
+    comment_id = query_results[0][0] + 1
+    data['comment_id'] = comment_id
+    data['adding_date'] = datetime.now()
+    value_tuple = tuple([value for value in data.values()])
+    query = 'Insert Into movie_info (userID, movie_id, rating, msg, comment_id, adding_date) VALUES {};'.format(
+        value_tuple)
+    conn.execute(query)
+    print("Inserting comments by id: {}".format(comment_id))
+    conn.close()
+    return comment_id
+
+
+def fetch_comment_by_movieid(data: dict) -> list:
+    """    Returns:
+        A list of dictionaries
+    """
+
+    conn = db.connect()
+    print("Starting comment")
+    query_results = conn.execute(
+        "select a.account_name, c.rating, c.adding_date, c.msg from (Select * from comments where movie_id = '{}') as c natural join account_info as a limit 20;".format(data['movie_id'])).fetchall()
+    conn.close()
+    comments_list = []
+    for result in query_results:
+        item = {
+            "account_name": result[0],
+            "rating": result[1],
+            "adding_date": result[2],
+            "message": result[3],
+        }
+        comments_list.append(item)
+    return comments_list
+
+
+def insert_watch(data: dict) -> int:
+    """Insert new comment.
+
+    Returns: The comment ID for the inserted entry
+    """
+
+    conn = db.connect()
+    query_results = conn.execute(
+        "Select max(watch_id) from watch_list;").fetchall()
+    watch_id = query_results[0][0] + 1
+    data['watch_id'] = watch_id
+    data['watch_add_date'] = datetime.now()
+    value_tuple = tuple([value for value in data.values()])
+    query = 'Insert Into movie_info (userID, movie_id, watch_id, watch_add_date) VALUES {};'.format(
+        value_tuple)
+    conn.execute(query)
+    print("Inserting watch by id: {}".format(watch_id))
+    conn.close()
+    return watch_id
+
+
+def fetch_watch_by_userid(data: dict) -> list:
+    """    Returns:
+        A list of dictionaries
+    """
+
+    conn = db.connect()
+    print("Starting watch")
+    query_results = conn.execute(
+        "Select distinct movie_id from watch_list where userID = '{}'limit 20;".format(data['userID'])).fetchall()
+    movie_id_list = [result[0] for result in query_results]
+    query_results = conn.execute(
+        "Select * from movie_info where movie_id in '{}' limit 20;".format(tuple(movie_id_list))).fetchall()
+    conn.close()
+    movie_list = []
+    for result in query_results:
+        item = {
+            "movie_id": result[0],
+            "title": result[1],
+            "imdb_id": result[2],
+            "release_date": result[3],
+            "overview": result[4],
+            "tagline": result[5],
+            "homepage": result[6],
+            "poster_path": result[7],
+            "popularity": result[8],
+            "revenue": result[9],
+        }
+        movie_list.append(item)
     return movie_list
