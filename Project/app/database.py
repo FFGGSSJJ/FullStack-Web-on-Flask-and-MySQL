@@ -511,6 +511,9 @@ def fetch_prerecommendations(userid) -> dict:
 
     conn = db.connect()
     query = "call recommend({})".format(userid)
+    print("call recommend({})".format(userid))
+    query_results = conn.execute(query).fetchall()
+    query = "select * from recommend_table limit"
     query_results = conn.execute(query).fetchall()
     conn.close()
     pre_recommendations = {}
@@ -522,10 +525,12 @@ def fetch_prerecommendations(userid) -> dict:
             result[3]
         ]
         if not item[0] in pre_recommendations.keys():
-            pre_recommendations[item[0]] = {item[3]: item[1]}
+            pre_recommendations[item[0]] = {item[2]: item[1]}
         else:
-            pre_recommendations[item[0]][item[3]] = item[1]
+            pre_recommendations[item[0]][item[2]] = item[1]
     return pre_recommendations
+
+# top level fuinction
 
 
 def fetch_recommendations(user_id) -> list:
@@ -543,15 +548,41 @@ def fetch_recommendations(user_id) -> list:
             recommendations.append((item, items[item]))
 
     recommendations.sort(key=lambda val: val[1], reverse=True)
-
+    conn = db.connect()
     recommendation_list = []
-    for result in recommendations:
+    i = 0
+    print(recommendations)
+    for single in recommendations:
+        if i >= 10:
+            break
+        query = "Select * From movie_info Where movie_id='{}';".format(
+            single[0])
+        result = conn.execute(query).fetchall()[0]
+        query_results = conn.execute(
+            "Select genre_id from movie_genre where movie_id = '{}';".format(result[0])).fetchall()
+        genre_list = [q[0] for q in query_results]
+        url = "https://api.themoviedb.org/3/movie/{}?api_key=8265bd1679663a7ea12ac168da84d2e8&language=en-US".format(
+            result[0])
+        data = requests.get(url)
+        data = data.json()
+        poster_path = data['poster_path']
+        full_path = "https://image.tmdb.org/t/p/original/" + poster_path
         item = {
-            "title": result[0],
-            "rating": result[1]
+            "movie_id": result[0],
+            "title": result[1],
+            "imdb_id": result[2],
+            "release_date": result[3],
+            "overview": result[4],
+            "tagline": result[5],
+            "homepage": result[6],
+            "poster_path": full_path,
+            "popularity": result[8],
+            "revenue": result[9],
+            "genres": genre_list
         }
         recommendation_list.append(item)
-
+        i = i+1
+    conn.close()
     return recommendation_list
 
 
