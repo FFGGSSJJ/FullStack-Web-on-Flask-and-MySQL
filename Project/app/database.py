@@ -2,6 +2,7 @@
 # from asyncio.windows_events import NULL
 from app import db
 from datetime import datetime
+import requests
 
 genre_dict = {16: "Animation", 35: "Comedy", 10751: "Family", 12: "Adventure", 28: "Action", 53: "Thriller", 18: "Drama", 10749: "Romance", 80: "Crime", 9648: "Mystery", 27: "Horror", 99: "Documentary", 10769: "Foreign", 878: "Science Fiction", 14: "Fantasy", 36: "History", 10752: "War", 10402: "Music", 37: "Western", 10770: "TV Movie",
               11176: "Carousel Productions", 11602: "Vision View Entertainment", 29812: "Telescene Film Group Productions", 2883: "Aniplex", 7759: "GoHands", 7760: "BROSTA TV", 7761: "Mardock Scramble Production Committee", 33751: "Sentai Filmworks", 17161: "Odyssey Media", 18012: "Pulser Productions", 18013: "Rogue State", 23822: "The Cartel"}
@@ -24,6 +25,12 @@ def fetch_movie() -> list:
         query = conn.execute(
             "Select genre_id from movie_genre where movie_id = '{}';".format(result[0])).fetchall()
         genre_list = [q[0] for q in query]
+        url = "https://api.themoviedb.org/3/movie/{}?api_key=8265bd1679663a7ea12ac168da84d2e8&language=en-US".format(
+            result[0])
+        data = requests.get(url)
+        data = data.json()
+        poster_path = data['poster_path']
+        full_path = "https://image.tmdb.org/t/p/original/" + poster_path
         item = {
             "movie_id": result[0],
             "title": result[1],
@@ -32,7 +39,7 @@ def fetch_movie() -> list:
             "overview": result[4],
             "tagline": result[5],
             "homepage": result[6],
-            "poster_path": result[7],
+            "poster_path": full_path,
             "popularity": result[8],
             "revenue": result[9],
             "genres": genre_list
@@ -233,15 +240,16 @@ def genre_filter(data: dict) -> list:
     for genre in data:
         if data[genre] == 1:
             genre_list.append(genre)
-
+    if genre_list == []:
+        return []
     query_results = conn.execute(
-        "Select genre_id from genre where genre_name in '{}';".format(tuple(genre_list))).fetchall()
+        "Select genre_id from genre where genre_name in {};".format(tuple(genre_list))).fetchall()
     genre_id_list = [result[0] for result in query_results]
-    query_results = conn.execute("Select distinct movie_id from movie_genre where genre_id in '{}';".format(
+    query_results = conn.execute("Select distinct movie_id from movie_genre where genre_id in {};".format(
         tuple(genre_id_list))).fetchall()
     movie_id_list = [result[0] for result in query_results]
     query_results = conn.execute(
-        "Select * from movie_info where movie_id in '{}' limit 20;".format(tuple(movie_id_list))).fetchall()
+        "Select * from movie_info where movie_id in {} limit 20;".format(tuple(movie_id_list))).fetchall()
     conn.close()
     movie_list = []
     for result in query_results:
@@ -337,7 +345,7 @@ def fetch_watch_by_userid(data: dict) -> list:
         "Select distinct movie_id from watch_list where userID = '{}'limit 20;".format(data['userID'])).fetchall()
     movie_id_list = [result[0] for result in query_results]
     query_results = conn.execute(
-        "Select * from movie_info where movie_id in '{}' limit 20;".format(tuple(movie_id_list))).fetchall()
+        "Select * from movie_info where movie_id in {} limit 20;".format(tuple(movie_id_list))).fetchall()
     conn.close()
     movie_list = []
     for result in query_results:
