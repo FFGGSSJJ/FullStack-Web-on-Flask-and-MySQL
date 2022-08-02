@@ -130,6 +130,13 @@ def homepage():
     return render_template("homepage.html", items=items)
 
 
+@app.route("/")
+def homepage_ranking():
+    """ returns rendered homepage """
+    items = db_helper.fetch_movie_ranking()
+    return render_template("homepage.html", items=items)
+
+
 @app.route("/advancedop")
 def rootpage():
     """ returns rendered rootpage """
@@ -184,6 +191,8 @@ def verify_user():
 
 # filter movie by genre
 # input genrename-value pair 1 for chosen
+
+
 @app.route("/genre_filter", methods=['POST'])
 def genre_filter():
     """ returns rendered rootpage """
@@ -196,6 +205,8 @@ def genre_filter():
 
 # add new comment
 # input is userID, movie_id, rating, msg,
+
+
 @app.route("/create_comment", methods=['POST'])
 def create_comment():
     """ recieves post requests to add new task """
@@ -206,6 +217,8 @@ def create_comment():
 
 # for single movie page (with get_movie_info)
 # input is the movie id
+
+
 @app.route("/movie_comment", methods=['POST'])
 def get_comment_by_movie():
     data = request.get_json()
@@ -226,6 +239,8 @@ def create_watchlist_item():
 
 # for user home page
 # input is the user id
+
+
 @app.route("/user_watchlist", methods=['POST'])
 def get_watchlist():
     data = request.get_json()
@@ -243,6 +258,8 @@ def get_userinfo_by_user():
 
 # for single movie page (with get_comment_by_movie)
 # input is the movie id
+
+
 @app.route("/movie_info", methods=['POST'])
 def get_movie_info():
     data = request.get_json()

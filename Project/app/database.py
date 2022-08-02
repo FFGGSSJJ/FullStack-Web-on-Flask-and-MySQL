@@ -48,6 +48,46 @@ def fetch_movie() -> list:
     return movie_list
 
 
+def fetch_movie_ranking() -> list:
+    """Reads all tasks listed in the todo table
+
+    Returns:
+        A list of dictionaries
+    """
+
+    conn = db.connect()
+    print("Starting database")
+    query_results = conn.execute(
+        "Select * from movie_info order by popularity desc LIMIT 10;").fetchall()
+    movie_list = []
+    for result in query_results:
+        query = conn.execute(
+            "Select genre_id from movie_genre where movie_id = '{}';".format(result[0])).fetchall()
+        genre_list = [q[0] for q in query]
+        url = "https://api.themoviedb.org/3/movie/{}?api_key=8265bd1679663a7ea12ac168da84d2e8&language=en-US".format(
+            result[0])
+        data = requests.get(url)
+        data = data.json()
+        poster_path = data['poster_path']
+        full_path = "https://image.tmdb.org/t/p/original/" + poster_path
+        item = {
+            "movie_id": result[0],
+            "title": result[1],
+            "imdb_id": result[2],
+            "release_date": result[3],
+            "overview": result[4],
+            "tagline": result[5],
+            "homepage": result[6],
+            "poster_path": full_path,
+            "popularity": result[8],
+            "revenue": result[9],
+            "genres": genre_list
+        }
+        movie_list.append(item)
+    conn.close()
+    return movie_list
+
+
 def update_movie_entry(movie_id: int, data: dict) -> None:
     """Updates task description based on given `task_id`
 
@@ -249,11 +289,12 @@ def genre_filter(data: dict) -> list:
     query_results = conn.execute(
         "Select genre_id from genre where genre_name in {};".format(tuple(genre_list))).fetchall()
     genre_id_list = [result[0] for result in query_results]
-    print(genre_id_list)
-    query_results = conn.execute("Select distinct movie_id from movie_genre where genre_id in {} limit 10;".format(
-        tuple(genre_id_list))).fetchall()
-    # print("Select distinct movie_id from movie_genre where genre_id in {};".format(
-    #     tuple(genre_id_list)))
+    if len(genre_id_list) == 1:
+        query_results = conn.execute(
+            "Select distinct movie_id from movie_genre where genre_id = {};".format(genre_id_list[0])).fetchall()
+    else:
+        query_results = conn.execute("Select distinct movie_id from movie_genre where genre_id in {};".format(
+            tuple(genre_id_list))).fetchall()
     movie_id_list = [result[0] for result in query_results]
 
     query_results = conn.execute(
