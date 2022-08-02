@@ -107,16 +107,21 @@ def remove_movie_by_id(movie_id: int) -> None:
 def search_movie_by_title(data: dict) -> list:
     """ Search entries based on title """
     conn = db.connect()
-    query_results = 'Select * From movie_info where title like "%%{}%%" LIMIT 10;'.format(
-        data['title']).fetchall()
+    query_results = conn.execute('Select * From movie_info where title like "%%{}%%" LIMIT 10;'.format(
+        data['title'])).fetchall()
     # if (data['movie_id'] != NULL):
     #     query = 'Select * From movie_info where movie_id = {} LIMIT 40;'.format(data['movie_id'])
-    conn.close()
     movie_list = []
     for result in query_results:
         query = conn.execute(
             "Select genre_id from movie_genre where movie_id = '{}';".format(result[0])).fetchall()
         genre_list = [q[0] for q in query]
+        url = "https://api.themoviedb.org/3/movie/{}?api_key=8265bd1679663a7ea12ac168da84d2e8&language=en-US".format(
+            result[0])
+        data = requests.get(url)
+        data = data.json()
+        poster_path = data['poster_path']
+        full_path = "https://image.tmdb.org/t/p/original/" + poster_path
         item = {
             "movie_id": result[0],
             "title": result[1],
@@ -125,13 +130,13 @@ def search_movie_by_title(data: dict) -> list:
             "overview": result[4],
             "tagline": result[5],
             "homepage": result[6],
-            "poster_path": result[7],
+            "poster_path": full_path,
             "popularity": result[8],
             "revenue": result[9],
             "genres": genre_list
         }
         movie_list.append(item)
-
+    conn.close()
     return movie_list
 
 
@@ -239,7 +244,8 @@ def genre_filter(data: dict) -> list:
     for genre in data:
         if data[genre] == 1:
             genre_list.append(genre)
-    print("Select genre_id from genre where genre_name in {};".format(tuple(genre_list)))
+    print("Select genre_id from genre where genre_name in {};".format(
+        tuple(genre_list)))
     query_results = conn.execute(
         "Select genre_id from genre where genre_name in {};".format(tuple(genre_list))).fetchall()
     print(query_results[0])
@@ -252,6 +258,12 @@ def genre_filter(data: dict) -> list:
     conn.close()
     movie_list = []
     for result in query_results:
+        url = "https://api.themoviedb.org/3/movie/{}?api_key=8265bd1679663a7ea12ac168da84d2e8&language=en-US".format(
+            result[0])
+        data = requests.get(url)
+        data = data.json()
+        poster_path = data['poster_path']
+        full_path = "https://image.tmdb.org/t/p/original/" + poster_path
         item = {
             "movie_id": result[0],
             "title": result[1],
@@ -260,7 +272,7 @@ def genre_filter(data: dict) -> list:
             "overview": result[4],
             "tagline": result[5],
             "homepage": result[6],
-            "poster_path": result[7],
+            "poster_path": full_path,
             "popularity": result[8],
             "revenue": result[9],
         }
@@ -348,6 +360,12 @@ def fetch_watch_by_userid(data: dict) -> list:
     conn.close()
     movie_list = []
     for result in query_results:
+        url = "https://api.themoviedb.org/3/movie/{}?api_key=8265bd1679663a7ea12ac168da84d2e8&language=en-US".format(
+            result[0])
+        data = requests.get(url)
+        data = data.json()
+        poster_path = data['poster_path']
+        full_path = "https://image.tmdb.org/t/p/original/" + poster_path
         item = {
             "movie_id": result[0],
             "title": result[1],
@@ -356,7 +374,7 @@ def fetch_watch_by_userid(data: dict) -> list:
             "overview": result[4],
             "tagline": result[5],
             "homepage": result[6],
-            "poster_path": result[7],
+            "poster_path": full_path,
             "popularity": result[8],
             "revenue": result[9],
         }
@@ -391,6 +409,12 @@ def search_movie_by_id(data: dict) -> None:
     query_results = conn.execute(
         "Select genre_id from movie_genre where movie_id = '{}';".format(result[0])).fetchall()
     genre_list = [q[0] for q in query_results]
+    url = "https://api.themoviedb.org/3/movie/{}?api_key=8265bd1679663a7ea12ac168da84d2e8&language=en-US".format(
+        result[0])
+    data = requests.get(url)
+    data = data.json()
+    poster_path = data['poster_path']
+    full_path = "https://image.tmdb.org/t/p/original/" + poster_path
     item = {
         "movie_id": result[0],
         "title": result[1],
@@ -399,7 +423,7 @@ def search_movie_by_id(data: dict) -> None:
         "overview": result[4],
         "tagline": result[5],
         "homepage": result[6],
-        "poster_path": result[7],
+        "poster_path": full_path,
         "popularity": result[8],
         "revenue": result[9],
         "genres": genre_list
