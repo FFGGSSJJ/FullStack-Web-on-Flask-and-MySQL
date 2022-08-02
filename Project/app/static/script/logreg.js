@@ -31,7 +31,7 @@ $(document).ready(function () {
         console.log('register clicked');
         $.ajax({
             type: "POST",
-            url: "/register",
+            url: "/registerinfo",
             contentType: "application/json; charset=utf-8",
             data: JSON.stringify({
                 'name': $('#regname').val(),

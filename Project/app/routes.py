@@ -177,13 +177,15 @@ def registerpage():
     return render_template("register.html")
 
 
-@app.route("/register", methods=['POST'])
+@app.route("/registerinfo", methods=['POST'])
 def register():
     try:
         data = request.get_json()
         db_helper.insert_user(data)
         session.clear()
         session['user'] = data
+        session['userlogged'] = True
+        print(data['userID'])
         result = {'success': True, 'response': 'Done',
                   'userid': data['userID']}
     except:

@@ -644,7 +644,8 @@ def Euclidean(user1, user2):
     Returns:
         A value shows the similarity
     """
-    data = fetch_prerecommendations()
+    print(user1)
+    data = fetch_prerecommendations(user1)
     user1_data = data[user1]
     user2_data = data[user2]
     distance = 0
