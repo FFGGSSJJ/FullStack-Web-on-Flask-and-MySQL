@@ -173,6 +173,27 @@ $(document).ready(function () {
         });
     });
 
+    // function of check button
+    $('.check').click(function () {
+        console.log('Check clicked');
+        const id = $(this).data('source')
+        $.ajax({
+            type: 'POST',
+            url: '/movie_info',
+            contentType: 'application/json;charset=UTF-8',
+            data: JSON.stringify({
+                'movie_id': id
+            }),
+            success: function (res) {
+                console.log(res.response)
+                location.href = '/movieintro';
+            },
+            error: function () {
+                console.log('Error');
+            }
+        });
+    });
+
 // functions in Homepage
     // sidebar function
     $('.fa-search').click(function () {

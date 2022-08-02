@@ -143,7 +143,8 @@ def homepage():
     """ returns rendered homepage """
     flag = session.get('userlogged')
     if (flag):
-        recommend = db_helper.fetch_movie()
+        data = session.get('user')
+        recommend = db_helper.fetch_recommendations(data["userID"])
         rankitems = db_helper.fetch_movie_ranking()
         return render_template("homepage.html", ranking=rankitems, recommend=recommend)
     else:
@@ -297,5 +298,6 @@ def get_movie_info():
 def get_recommend():
     data = request.get_json()
     print("vevrv")
-    items = db_helper.fetch_recommendations(data["userID"])
-    return render_template("recommend.html", items=items)
+    session['recommend'] = db_helper.fetch_recommendations(data["userID"])
+    result = {'success': True, 'response': 'Done'}
+    return jsonify(result)

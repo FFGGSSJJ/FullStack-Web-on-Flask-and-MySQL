@@ -54,6 +54,7 @@
         <h3 class="movie-list-title">OVERVIEW</h3>
         <p class="featured-desc-movie">{{overview}}</p>
         <button id="addfavbtn", data-movie="{{id}}", data-user="{{uid}}">Add To List</button>
+        <button id="backbtn", onclick="history.back();">Return</button>
         <h3 class="movie-list-title">FEATURED COMMENTS</h3>
         {% for item in comment %}
         <p class="featured-desc-movie">{{item.account_name}}:{{item.rating}}-{{item.adding_date}}</p>

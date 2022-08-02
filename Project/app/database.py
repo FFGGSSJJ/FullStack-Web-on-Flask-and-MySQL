@@ -519,11 +519,13 @@ def fetch_prerecommendations(userid) -> dict:
     """
 
     conn = db.connect()
-    query = "call recommend({})".format(userid)
+    query = "call recommend({});".format(userid)
     print("call recommend({})".format(userid))
     query_results = conn.execute(query).fetchall()
-    query = "select * from recommend_table limit"
+    query = "select * from recommend_table limit 10;"
     query_results = conn.execute(query).fetchall()
+    print("\n\n\n\n\n")
+    print(query_results)
     conn.close()
     pre_recommendations = {}
     for result in query_results:
