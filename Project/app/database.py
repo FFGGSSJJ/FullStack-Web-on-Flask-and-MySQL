@@ -505,74 +505,17 @@ def search_movie_by_id(data: dict) -> None:
     return item
 
 
-
-def fetch_prerecommendations() -> dict:
+def fetch_prerecommendations(userid) -> dict:
     """Read all similar users based on tags
     Returns:
         A list of dictionaries{userID:{title:rating}}
     """
 
     conn = db.connect()
-    query = '''
-            CREATE PROCEDURE recommend(IN search_userID INT)
-            BEGIN 
-            DECLARE done INT default 0;
-
-            DECLARE user_tag1 INT;
-            DECLARE user_tag2 INT;
-            DECLARE user_tag3 INT;
-
-            DECLARE curr_user INT;
-            DECLARE curr_tag1 INT;
-            DECLARE curr_tag2 INT;
-            DECLARE curr_tag3 INT;
-
-
-            DECLARE usesr_cursor CURSOR FOR SELECT DISTINCT userID FROM account_info WHERE userID != search_userID;
-            DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = 1;
-
-            SET user_tag1 = (SELECT tag1 FROM account_info WHERE account_info.userID = search_userID);
-            SET user_tag2 = (SELECT tag2 FROM account_info WHERE account_info.userID = search_userID);
-            SET user_tag3 = (SELECT tag3 FROM account_info WHERE account_info.userID = search_userID);
-
-            DROP TABLE IF EXISTS recommend_table;
-
-            CREATE TABLE recommend_table(
-                userID INT,
-                rating real,
-                movie_id int,
-                title VARCHAR(50));
-
-            OPEN usesr_cursor;
-
-            REPEAT 
-                FETCH usesr_cursor INTO curr_user;
-
-                SET curr_tag1 = (SELECT tag1 FROM account_info WHERE account_info.userID = curr_user);
-                SET curr_tag2 = (SELECT tag2 FROM account_info WHERE account_info.userID = curr_user);
-                SET curr_tag3 = (SELECT tag3 FROM account_info WHERE account_info.userID = curr_user);
-
-
-                IF (curr_tag1 in (user_tag1,user_tag2,user_tag3)) and (curr_tag2 in (user_tag1,user_tag2,user_tag3)) and (curr_tag3 in (user_tag1,user_tag2,user_tag3)) THEN
-                    INSERT INTO recommend_table 
-                    (SELECT watch_list.userID, temp.average_rating, watch_list.movie_id, temp.title 
-                    FROM watch_list join
-                    (SELECT c.movie_id,m.title, avg(c.rating) as average_rating
-                        FROM comments c join movie_info m on c.movie_id = m.movie_id
-                        GROUP BY c.movie_id) as temp on watch_list.movie_id = temp.movie_id
-                    WHERE watch_list.userID = curr_user);
-                END IF;
-
-            UNTIL done
-            END REPEAT;
-
-            CLOSE usesr_cursor;
-
-            select search_userID, movie_id
-            from recommend_table
-
-            END
-            '''
+    query = "call recommend({})".format(userid)
+    print("call recommend({})".format(userid))
+    query_results = conn.execute(query).fetchall()
+    query = "select * from recommend_table limit"
     query_results = conn.execute(query).fetchall()
     conn.close()
     pre_recommendations = {}
@@ -584,36 +527,66 @@ def fetch_prerecommendations() -> dict:
             result[3]
         ]
         if not item[0] in pre_recommendations.keys():
-            pre_recommendations[item[0]] = {item[3]:item[1]}
+            pre_recommendations[item[0]] = {item[2]: item[1]}
         else:
-            pre_recommendations[item[0]][item[3]] = item[1]
+            pre_recommendations[item[0]][item[2]] = item[1]
     return pre_recommendations
 
-def fetch_recommendations(user) -> list:
+# top level fuinction
+
+
+def fetch_recommendations(user_id) -> list:
     """Read all similar users based on ratings
     Returns:
         A list
     """
     recommendations = []
-    data = fetch_prerecommendations()
-    top_user = similar_users(user)[0][0]
+    data = fetch_prerecommendations(user_id)
+    top_user = similar_users(user_id)[0][0]
     items = data[top_user]
-    
+
     for item in items.keys():
-        if item not in data[user].keys():
+        if item not in data[user_id].keys():
             recommendations.append((item, items[item]))
-            
-    recommendations.sort(key = lambda val: val[1], reverse=True)
-    
+
+    recommendations.sort(key=lambda val: val[1], reverse=True)
+    conn = db.connect()
     recommendation_list = []
-    for result in recommendations:
+    i = 0
+    print(recommendations)
+    for single in recommendations:
+        if i >= 10:
+            break
+        query = "Select * From movie_info Where movie_id='{}';".format(
+            single[0])
+        result = conn.execute(query).fetchall()[0]
+        query_results = conn.execute(
+            "Select genre_id from movie_genre where movie_id = '{}';".format(result[0])).fetchall()
+        genre_list = [q[0] for q in query_results]
+        url = "https://api.themoviedb.org/3/movie/{}?api_key=8265bd1679663a7ea12ac168da84d2e8&language=en-US".format(
+            result[0])
+        data = requests.get(url)
+        data = data.json()
+        poster_path = data['poster_path']
+        full_path = "https://image.tmdb.org/t/p/original/" + poster_path
         item = {
-            "title": result[0],
-            "rating": result[1]
+            "movie_id": result[0],
+            "title": result[1],
+            "imdb_id": result[2],
+            "release_date": result[3],
+            "overview": result[4],
+            "tagline": result[5],
+            "homepage": result[6],
+            "poster_path": full_path,
+            "popularity": result[8],
+            "revenue": result[9],
+            "genres": genre_list
         }
         recommendation_list.append(item)
-
+        i = i+1
+    conn.close()
     return recommendation_list
+
 
 def Euclidean(user1, user2):
     """Reads the userID in prerecommendations dict
@@ -630,7 +603,8 @@ def Euclidean(user1, user2):
         if key in user2_data.keys():
 
             distance += pow(float(user1_data[key]) - float(user2_data[key]), 2)
-    return 1 / (1 + sqrt(distance)) 
+    return 1 / (1 + sqrt(distance))
+
 
 def similar_users(userID):
     """Reads the similarity value of userID stored in dict
@@ -639,13 +613,13 @@ def similar_users(userID):
         A list of tuples
     """
     res = []
-    data = fetch_prerecommendations()
+    data = fetch_prerecommendations(userID)
     for user2 in data.keys():
         if not user2 == userID:
             similarity = Euclidean(userID, user2)
             res.append((user2, similarity))
-    res.sort(key = lambda val: val[1])
+    res.sort(key=lambda val: val[1])
     return res[:10]
 
 
-#---------------------------------------------recommendation end-----------------------------------------------
+# ---------------------------------------------recommendation end-----------------------------------------------

@@ -114,6 +114,7 @@ def search_result():
     searched_list = session.get('movie_list', None)
     return render_template("search_result.html", items=searched_list)
 
+
 @app.route("/movieintro")
 def movieintro():
     """ display movie intro page """
@@ -121,6 +122,7 @@ def movieintro():
     data = session.get('movie_info', None)
     comments = session.get('comment', None)
     return render_template("movieintro.html", uid=user['userID'], id=data['movie_id'], title=data['title'], overview=data['overview'], poster_path=data['poster_path'], comment=comments)
+
 
 @app.route("/adv_result_0")
 def advanced_result_0():
@@ -289,3 +291,11 @@ def get_movie_info():
     session['comment'] = db_helper.fetch_comment_by_movieid(data)
     result = {'success': True, 'response': 'Done'}
     return jsonify(result)
+
+
+@app.route("/get_recommend", methods=['POST'])
+def get_recommend():
+    data = request.get_json()
+    print("vevrv")
+    items = db_helper.fetch_recommendations(data["userID"])
+    return render_template("recommend.html", items=items)
