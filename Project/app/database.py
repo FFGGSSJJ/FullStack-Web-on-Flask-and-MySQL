@@ -270,15 +270,16 @@ def insert_user(data: dict) -> None:
     print(genre_list)
     data['tags'] = [get_tag(genre)[0] for genre in genre_list]
     print(data['tags'])
+    print(len(genre_list))
     if len(genre_list) == 1:
         query = 'Insert Into account_info (userID, account_name, account_passwd, age, account_type, tag1) VALUES ({}, "{}", "{}",{},{},{});'.format(
-            data['userID'], data["name"], data["password"], data["age"], data['account_type'], data['tags'][0][0])
+            data['userID'], data["name"], data["password"], data["age"], data['account_type'], data['tags'][0])
     elif len(genre_list) == 2:
         query = 'Insert Into account_info (userID, account_name, account_passwd, age, account_type, tag1, tag2) VALUES ({}, "{}", "{}",{},{},{},{});'.format(
-            data['userID'], data["name"], data["password"], data["age"], data['account_type'], data['tags'][0][0], data['tags'][1][0])
+            data['userID'], data["name"], data["password"], data["age"], data['account_type'], data['tags'][0], data['tags'][1])
     elif len(genre_list) == 3:
         query = 'Insert Into account_info (userID, account_name, account_passwd, age, account_type, tag1, tag2, tag3) VALUES ({}, "{}", "{}",{},{},{},{},{});'.format(
-            data['userID'], data["name"], data["password"], data["age"], data['account_type'], data['tags'][0][0], data['tags'][1][0], data['tags'][2][0])
+            data['userID'], data["name"], data["password"], data["age"], data['account_type'], data['tags'][0], data['tags'][1], data['tags'][2])
     else:
         return {}
     conn.execute(query)
