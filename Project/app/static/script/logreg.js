@@ -36,7 +36,13 @@ $(document).ready(function () {
             data: JSON.stringify({
                 'name': $('#regname').val(),
                 'password': $('#regpassword').val(),
-                'age': $('#regage').val()
+                'age': $('#regage').val(),
+                'Animation': $('#Animation').is(":checked") ? 1:0,
+                'Comedy': $('#Comedy').is(":checked") ? 1:0,
+                'Adventure': $('#Adventure').is(":checked") ? 1:0,
+                'Action': $('#Action').is(":checked") ? 1:0,
+                'Romance': $('#Romance').is(":checked") ? 1:0,
+                'War': $('#War').is(":checked") ? 1:0
             }),
             success: function (res) {
                 console.log(res.userid)

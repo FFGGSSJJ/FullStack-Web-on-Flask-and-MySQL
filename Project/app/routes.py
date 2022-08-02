@@ -1,4 +1,6 @@
 """ Specifies routing for the application"""
+from re import I
+from turtle import title
 from flask import render_template, request, jsonify, session
 from app import app
 from app import database as db_helper
@@ -46,7 +48,6 @@ def search_movie():
     """ search movie"""
     data = request.get_json()
     searched_list = db_helper.search_movie_by_title(data)
-    session.clear()
     session['movie_list'] = searched_list
     result = {'success': True, 'response': 'Done'}
     return jsonify(result)
@@ -102,6 +103,11 @@ def search_result():
     searched_list = session.get('movie_list', None)
     return render_template("search_result.html", items=searched_list)
 
+@app.route("/movieintro")
+def movieintro():
+    """ display movie intro page """
+    data = session.get('movie_info', None)
+    return render_template("movieintro.html", title=data['title'], overview=data['overview'], poster_path=data['poster_path'])
 
 @app.route("/adv_result_0")
 def advanced_result_0():
@@ -149,7 +155,7 @@ def register():
         data = request.get_json()
         db_helper.insert_user(data)
         session.clear()
-        session['verify_user'] = data
+        session['user'] = data
         result = {'success': True, 'response': 'Done',
                   'userid': data['userID']}
     except:
@@ -167,8 +173,10 @@ def verify_user():
             result = {'success': False, 'response': 'User not found'}
         else:
             print("User found")
-            print(user['userID'])
-            print(user['account_passwd'])
+            print(data['userID'])
+            items = db_helper.search_user_by_id(data)
+            session.clear()
+            session['user'] = items
             result = {'success': True, 'response': 'Done'}
     except:
         result = {'success': False, 'response': 'Something went wrong'}
@@ -228,16 +236,17 @@ def get_watchlist():
 # input is the user id
 
 
-@app.route("/user_info", methods=['POST'])
+@app.route("/userpage")
 def get_userinfo_by_user():
-    data = request.get_json()
-    items = db_helper.search_user_by_id(data)
-    return render_template("user_info.html", items=items)
+    items = session.get('user')
+    return render_template("userpage.html", items=items)
 
 # for single movie page (with get_comment_by_movie)
 # input is the movie id
 @app.route("/movie_info", methods=['POST'])
 def get_movie_info():
     data = request.get_json()
+    print("azxzasas")
     items = db_helper.search_movie_by_id(data)
-    return render_template("movie_info.html", items=items)
+    session['movie_info'] = items
+    return render_template("movieintro.html")
