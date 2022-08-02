@@ -254,6 +254,7 @@ def get_tag(name):
 
 
 def insert_user(data: dict) -> None:
+    print("intert\n\n\n\n\n\n\n")
     conn = db.connect()
     query_results = conn.execute(
         "Select max(userID) from account_info;").fetchall()
@@ -264,7 +265,7 @@ def insert_user(data: dict) -> None:
     i = 0
     genre_list = []
     for genre in data['tags']:
-        if data[genre] == 1 and i < 3:
+        if data['tags'][genre] == 1 and i < 3:
             genre_list.append(genre)
             i = i+1
     data['tags'] = [get_tag(genre) for genre in genre_list]
@@ -281,6 +282,8 @@ def insert_user(data: dict) -> None:
         return {}
     conn.execute(query)
     conn.close()
+    print(query)
+    print(data['userID'])
     return data
 
 
