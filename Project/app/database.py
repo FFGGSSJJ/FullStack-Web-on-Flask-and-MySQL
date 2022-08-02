@@ -12,7 +12,6 @@ genre_dict = {16: "Animation", 35: "Comedy", 10751: "Family", 12: "Adventure", 2
 
 def fetch_movie() -> list:
     """Reads all tasks listed in the todo table
-
     Returns:
         A list of dictionaries
     """
@@ -52,7 +51,6 @@ def fetch_movie() -> list:
 
 def fetch_movie_ranking() -> list:
     """Reads all tasks listed in the todo table
-
     Returns:
         A list of dictionaries
     """
@@ -92,11 +90,9 @@ def fetch_movie_ranking() -> list:
 
 def update_movie_entry(movie_id: int, data: dict) -> None:
     """Updates task description based on given `task_id`
-
     Args:
         task_id (int): Targeted task_id
         text (str): Updated description
-
     Returns:
         None
     """
@@ -119,7 +115,6 @@ def update_movie_entry(movie_id: int, data: dict) -> None:
 
 def insert_new_movie(data: dict) -> int:
     """Insert new movie.
-
     Returns: The movie_id for the inserted entry
     """
 
@@ -356,7 +351,6 @@ def genre_filter(data: dict) -> list:
 
 def insert_comment(data: dict) -> int:
     """Insert new comment.
-
     Returns: The comment ID for the inserted entry
     """
 
@@ -399,7 +393,6 @@ def fetch_comment_by_movieid(data: dict) -> list:
 
 def insert_watch(data: dict) -> int:
     """Insert new comment.
-
     Returns: The comment ID for the inserted entry
     """
 
@@ -466,7 +459,8 @@ def fetch_watch_by_userid(data: dict) -> list:
 
 def search_user_by_id(data: dict) -> None:
     conn = db.connect()
-    query = "Select * From account_info Where userID={};".format(data["userID"])
+    query = "Select * From account_info Where userID={};".format(
+        data["userID"])
     print(query)
     result = conn.execute(query).fetchall()[0]
     print(result)
@@ -535,7 +529,10 @@ def fetch_prerecommendations(userid) -> dict:
     query_results = conn.execute(query).fetchall()
     print("\n\n\n\n\n")
     print(query_results)
-    if query_results == []:
+    # ---------changes------
+    query_userid = [q[0] for q in query_results]
+    if query_results == [] or userid not in query_userid:
+        # ----------------------
         query_results = conn.execute(
             "Select * from movie_info order by popularity desc LIMIT 20;").fetchall()
         movie_list = []
@@ -643,7 +640,6 @@ def fetch_recommendations(user_id) -> list:
 
 def Euclidean(user1, user2):
     """Reads the userID in prerecommendations dict
-
     Returns:
         A value shows the similarity
     """
@@ -662,7 +658,6 @@ def Euclidean(user1, user2):
 
 def similar_users(userID):
     """Reads the similarity value of userID stored in dict
-
     Returns:
         A list of tuples
     """
