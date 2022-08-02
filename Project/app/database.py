@@ -3,6 +3,9 @@
 from app import db
 from datetime import datetime
 
+genre_dict = {16: "Animation", 35: "Comedy", 10751: "Family", 12: "Adventure", 28: "Action", 53: "Thriller", 18: "Drama", 10749: "Romance", 80: "Crime", 9648: "Mystery", 27: "Horror", 99: "Documentary", 10769: "Foreign", 878: "Science Fiction", 14: "Fantasy", 36: "History", 10752: "War", 10402: "Music", 37: "Western", 10770: "TV Movie",
+              11176: "Carousel Productions", 11602: "Vision View Entertainment", 29812: "Telescene Film Group Productions", 2883: "Aniplex", 7759: "GoHands", 7760: "BROSTA TV", 7761: "Mardock Scramble Production Committee", 33751: "Sentai Filmworks", 17161: "Odyssey Media", 18012: "Pulser Productions", 18013: "Rogue State", 23822: "The Cartel"}
+
 
 def fetch_movie() -> list:
     """Reads all tasks listed in the todo table
@@ -18,6 +21,9 @@ def fetch_movie() -> list:
     conn.close()
     movie_list = []
     for result in query_results:
+        query = conn.execute(
+            "Select genre_id from movie_genre where movie_id = '{}';".format(result[0])).fetchall()
+        genre_list = [q[0] for q in query]
         item = {
             "movie_id": result[0],
             "title": result[1],
@@ -29,6 +35,7 @@ def fetch_movie() -> list:
             "poster_path": result[7],
             "popularity": result[8],
             "revenue": result[9],
+            "genres": genre_list
         }
         movie_list.append(item)
 
@@ -94,15 +101,16 @@ def remove_movie_by_id(movie_id: int) -> None:
 def search_movie_by_title(data: dict) -> list:
     """ Search entries based on title """
     conn = db.connect()
-    query = 'Select * From movie_info where title like "%%{}%%" LIMIT 10;'.format(
-        data['title'])
+    query_results = 'Select * From movie_info where title like "%%{}%%" LIMIT 10;'.format(
+        data['title']).fetchall()
     # if (data['movie_id'] != NULL):
     #     query = 'Select * From movie_info where movie_id = {} LIMIT 40;'.format(data['movie_id'])
-    print(query)
-    query_results = conn.execute(query).fetchall()
     conn.close()
     movie_list = []
     for result in query_results:
+        query = conn.execute(
+            "Select genre_id from movie_genre where movie_id = '{}';".format(result[0])).fetchall()
+        genre_list = [q[0] for q in query]
         item = {
             "movie_id": result[0],
             "title": result[1],
@@ -114,6 +122,7 @@ def search_movie_by_title(data: dict) -> list:
             "poster_path": result[7],
             "popularity": result[8],
             "revenue": result[9],
+            "genres": genre_list
         }
         movie_list.append(item)
 
@@ -216,9 +225,9 @@ def search_user(data: dict) -> None:
         return {}
 
 
-def genre_fliter(data: dict) -> list:
+def genre_filter(data: dict) -> list:
     conn = db.connect()
-    print("Starting genre_fliter")
+    print("Starting genre_filter")
 
     genre_list = []
     for genre in data:
@@ -346,3 +355,47 @@ def fetch_watch_by_userid(data: dict) -> list:
         }
         movie_list.append(item)
     return movie_list
+
+
+def search_user_by_id(data: dict) -> None:
+    conn = db.connect()
+    query = "Select * From account_info Where userID='{}';".format(
+        data["userID"])
+    result = conn.execute(query).fetchall()[0]
+    user = {
+        "userID": result[0],
+        "account_name": result[1],
+        "account_passwd": result[2],
+        "age": result[3],
+        "account_type": result[4],
+        "tag1": genre_dict[result[5]],
+        "tag2": genre_dict[result[6]],
+        "tag3": genre_dict[result[7]],
+    }
+    conn.close()
+    return user
+
+
+def search_movie_by_id(data: dict) -> None:
+    conn = db.connect()
+    query = "Select * From movie_info Where movie_id='{}';".format(
+        data["movie_id"])
+    result = conn.execute(query).fetchall()[0]
+    query_results = conn.execute(
+        "Select genre_id from movie_genre where movie_id = '{}';".format(result[0])).fetchall()
+    genre_list = [q[0] for q in query_results]
+    item = {
+        "movie_id": result[0],
+        "title": result[1],
+        "imdb_id": result[2],
+        "release_date": result[3],
+        "overview": result[4],
+        "tagline": result[5],
+        "homepage": result[6],
+        "poster_path": result[7],
+        "popularity": result[8],
+        "revenue": result[9],
+        "genres": genre_list
+    }
+    conn.close()
+    return item

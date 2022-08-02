@@ -91,6 +91,7 @@ def search_page():
     """ display search result """
     return render_template("search.html")
 
+
 @app.route("/userpage")
 def userpage():
     """ display user page """
@@ -151,7 +152,8 @@ def register():
         db_helper.insert_user(data)
         session.clear()
         session['verify_user'] = data
-        result = {'success': True, 'response': 'Done', 'userid': data['userID']}
+        result = {'success': True, 'response': 'Done',
+                  'userid': data['userID']}
     except:
         result = {'success': False, 'response': 'Something went wrong'}
     return jsonify(result)
@@ -174,13 +176,19 @@ def verify_user():
         result = {'success': False, 'response': 'Something went wrong'}
     return jsonify(result)
 
+# filter movie by genre
+# input genrename-value pair 1 for chosen
 
-@app.route("/genre_fliter", methods=['POST'])
-def genre_fliter():
+
+@app.route("/genre_filter", methods=['POST'])
+def genre_filter():
     """ returns rendered rootpage """
     data = request.get_json()
-    items = db_helper.genre_fliter(data)
-    return render_template("genre_fliter.html", items=items)
+    items = db_helper.genre_filter(data)
+    return render_template("genre_filter.html", items=items)
+
+# add new comment
+# input is userID, movie_id, rating, msg,
 
 
 @app.route("/create_comment", methods=['POST'])
@@ -191,12 +199,18 @@ def create_comment():
     result = {'success': True, 'response': 'Done'}
     return jsonify(result)
 
+# for single movie page (with get_movie_info)
+# input is the movie id
+
 
 @app.route("/movie_comment", methods=['POST'])
 def get_comment_by_movie():
     data = request.get_json()
     items = db_helper.fetch_comment_by_movieid(data)
     return render_template("movie_comment.html", items=items)
+
+# add to watchlist
+# input is userID, movie_id
 
 
 @app.route("/create_watchlist_item", methods=['POST'])
@@ -207,9 +221,32 @@ def create_watchlist_item():
     result = {'success': True, 'response': 'Done'}
     return jsonify(result)
 
+# for user home page
+# input is the user id
+
 
 @app.route("/user_watchlist", methods=['POST'])
-def get_comment_by_user():
+def get_watchlist():
     data = request.get_json()
     items = db_helper.fetch_watch_by_userid(data)
     return render_template("user_watchlist.html", items=items)
+
+# get userinfo by id
+# input is the user id
+
+
+@app.route("/user_info", methods=['POST'])
+def get_userinfo_by_user():
+    data = request.get_json()
+    items = db_helper.search_user_by_id(data)
+    return render_template("user_info.html", items=items)
+
+# for single movie page (with get_comment_by_movie)
+# input is the movie id
+
+
+@app.route("/movie_info", methods=['POST'])
+def get_movie_info():
+    data = request.get_json()
+    items = db_helper.search_movie_by_id(data)
+    return render_template("movie_info.html", items=items)
