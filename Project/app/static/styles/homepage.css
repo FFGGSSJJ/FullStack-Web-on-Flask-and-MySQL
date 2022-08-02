@@ -90,6 +90,21 @@ body {
   border-radius: 0;
 }
 
+.checkrow {
+  padding-top: 50px;
+  width: 100%;
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+}
+
+.checkbox {
+  width: 50px;
+  height: 30px;
+  position: relative;
+  display: block;
+}
+
 /* Menu */
 .menu-container {
   flex: 6;
@@ -339,4 +354,9 @@ body {
   .menu-container {
     display: none;
   }
+}
+
+
+.personals-section {
+  padding-left: 100px;
 }

@@ -187,7 +187,7 @@ $(document).ready(function () {
 
     $('.fa-users').click(function () {
         console.log('User page clicked');
-        location.href = '/';
+        location.href = '/userpage';
     });
 
     $('.fa-bookmark').click(function () {
