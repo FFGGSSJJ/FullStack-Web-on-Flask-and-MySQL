@@ -19,7 +19,6 @@ def fetch_movie() -> list:
     print("Starting database")
     query_results = conn.execute(
         "Select * from movie_info LIMIT 10;").fetchall()
-    conn.close()
     movie_list = []
     for result in query_results:
         query = conn.execute(
@@ -45,7 +44,7 @@ def fetch_movie() -> list:
             "genres": genre_list
         }
         movie_list.append(item)
-
+    conn.close()
     return movie_list
 
 
