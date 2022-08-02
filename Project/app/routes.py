@@ -105,6 +105,7 @@ def search_page():
 def userpage():
     """ display user page """
     userinfo = session.get('user')
+    print(userinfo['name'])
     return render_template("userpage.html", user=userinfo)
 
 
@@ -183,11 +184,10 @@ def register():
         data = request.get_json()
         db_helper.insert_user(data)
         session.clear()
-        session['user'] = data
         session['userlogged'] = True
-        print(data['userID'])
-        result = {'success': True, 'response': 'Done',
-                  'userid': data['userID']}
+        user = db_helper.search_user_by_id(data)
+        session['user'] = user
+        result = {'success': True, 'response': 'Done'}
     except:
         result = {'success': False, 'response': 'Something went wrong'}
     return jsonify(result)
@@ -207,6 +207,7 @@ def verify_user():
             print(data['userID'])
             print(session.get('userlogged'))
             items = db_helper.search_user_by_id(data)
+            print("asasa")
             session.clear()
             session['user'] = items
             session['userlogged'] = True

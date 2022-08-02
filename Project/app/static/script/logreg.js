@@ -45,9 +45,7 @@ $(document).ready(function () {
                 'War': $('#War').is(":checked") ? 1:0
             }),
             success: function (res) {
-                console.log(res.userid)
                 if (res.success) {
-                    console.log(res.userid)
                     location.href = '/';
                 } else {
                     location.reload();

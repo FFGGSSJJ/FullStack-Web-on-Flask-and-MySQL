@@ -287,6 +287,7 @@ def insert_user(data: dict) -> None:
     else:
         return {}
     conn.execute(query)
+    print("asdsdsadsdsadsda\n")
     conn.close()
     return data
 
@@ -464,9 +465,10 @@ def fetch_watch_by_userid(data: dict) -> list:
 
 def search_user_by_id(data: dict) -> None:
     conn = db.connect()
-    query = "Select * From account_info Where userID='{}';".format(
-        data["userID"])
+    query = "Select * From account_info Where userID={};".format(data["userID"])
+    print(query)
     result = conn.execute(query).fetchall()[0]
+    print(result)
     genre_list = []
     for index in result[5:8]:
         if index != None:
