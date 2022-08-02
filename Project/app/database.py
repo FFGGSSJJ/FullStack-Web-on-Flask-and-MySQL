@@ -289,20 +289,12 @@ def genre_filter(data: dict) -> list:
     query_results = conn.execute(
         "Select genre_id from genre where genre_name in {};".format(tuple(genre_list))).fetchall()
     genre_id_list = [result[0] for result in query_results]
-<<<<<<< HEAD
     if len(genre_id_list) == 1:
         query_results = conn.execute(
             "Select distinct movie_id from movie_genre where genre_id = {};".format(genre_id_list[0])).fetchall()
     else:
         query_results = conn.execute("Select distinct movie_id from movie_genre where genre_id in {};".format(
             tuple(genre_id_list))).fetchall()
-=======
-    print(genre_id_list)
-    query_results = conn.execute("Select distinct movie_id from movie_genre where genre_id in {} limit 10;".format(
-        tuple(genre_id_list))).fetchall()
-    # print("Select distinct movie_id from movie_genre where genre_id in {};".format(
-    #     tuple(genre_id_list)))
->>>>>>> dc6fd57a661ca7ff35c3c5c5da6ddc85cb159bcc
     movie_id_list = [result[0] for result in query_results]
 
     query_results = conn.execute(
