@@ -249,6 +249,10 @@ def advanced_query_1() -> list:
     return result_list
 
 
+def get_tag(name):
+    return [k for (k, v) in genre_dict.items() if v == name]
+
+
 def insert_user(data: dict) -> None:
     conn = db.connect()
     query_results = conn.execute(
@@ -256,8 +260,25 @@ def insert_user(data: dict) -> None:
     # query_results = [x for x in query_results]
     movie_id = query_results[0][0] + 1
     data['userID'] = movie_id
-    query = 'Insert Into account_info (userID, account_name, account_passwd, age) VALUES ("{}", "{}", "{}","{}");'.format(
-        data['userID'], data["name"], data["password"], data["age"])
+    data['account_type'] = 1
+    i = 0
+    genre_list = []
+    for genre in data['tags']:
+        if data[genre] == 1 and i < 3:
+            genre_list.append(genre)
+            i = i+1
+    data['tags'] = [get_tag(genre) for genre in genre_list]
+    if len(genre_list) == 1:
+        query = 'Insert Into account_info (userID, account_name, account_passwd, age, account_type, tag1) VALUES ({}, "{}", "{}",{},{},{});'.format(
+            data['userID'], data["name"], data["password"], data["age"], data['account_type'], data['tags'][0])
+    elif len(genre_list) == 2:
+        query = 'Insert Into account_info (userID, account_name, account_passwd, age, account_type, tag1, tag2) VALUES ({}, "{}", "{}",{},{},{},{});'.format(
+            data['userID'], data["name"], data["password"], data["age"], data['account_type'], data['tags'][0], data['tags'][1])
+    elif len(genre_list) == 3:
+        query = 'Insert Into account_info (userID, account_name, account_passwd, age, account_type, tag1, tag2, tag3) VALUES ({}, "{}", "{}",{},{},{},{},{});'.format(
+            data['userID'], data["name"], data["password"], data["age"], data['account_type'], data['tags'][0], data['tags'][1], data['tags'][2])
+    else:
+        return {}
     conn.execute(query)
     conn.close()
     return data
