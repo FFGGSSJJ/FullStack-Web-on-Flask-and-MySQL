@@ -94,7 +94,8 @@ def search_page():
 @app.route("/userpage")
 def userpage():
     """ display user page """
-    return render_template("userpage.html")
+    userinfo = session.get('user')
+    return render_template("userpage.html", user=userinfo)
 
 
 @app.route("/search_result")

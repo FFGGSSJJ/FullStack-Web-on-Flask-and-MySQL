@@ -147,7 +147,7 @@ def remove_movie_by_id(movie_id: int) -> None:
 def search_movie_by_title(data: dict) -> list:
     """ Search entries based on title """
     conn = db.connect()
-    query_results = conn.execute('Select * From movie_info where title like "%%{}%%" LIMIT 10;'.format(
+    query_results = conn.execute('Select * From movie_info where title like "%%{}%%" LIMIT 5;'.format(
         data['title'])).fetchall()
     # if (data['movie_id'] != NULL):
     #     query = 'Select * From movie_info where movie_id = {} LIMIT 40;'.format(data['movie_id'])
@@ -275,19 +275,17 @@ def insert_user(data: dict) -> None:
     print(data['tags'])
     if len(genre_list) == 1:
         query = 'Insert Into account_info (userID, account_name, account_passwd, age, account_type, tag1) VALUES ({}, "{}", "{}",{},{},{});'.format(
-            data['userID'], data["name"], data["password"], data["age"], data['account_type'], data['tags'][0])
+            data['userID'], data["name"], data["password"], data["age"], data['account_type'], data['tags'][0][0])
     elif len(genre_list) == 2:
         query = 'Insert Into account_info (userID, account_name, account_passwd, age, account_type, tag1, tag2) VALUES ({}, "{}", "{}",{},{},{},{});'.format(
-            data['userID'], data["name"], data["password"], data["age"], data['account_type'], data['tags'][0], data['tags'][1])
+            data['userID'], data["name"], data["password"], data["age"], data['account_type'], data['tags'][0][0], data['tags'][1][0])
     elif len(genre_list) == 3:
         query = 'Insert Into account_info (userID, account_name, account_passwd, age, account_type, tag1, tag2, tag3) VALUES ({}, "{}", "{}",{},{},{},{},{});'.format(
-            data['userID'], data["name"], data["password"], data["age"], data['account_type'], data['tags'][0], data['tags'][1], data['tags'][2])
+            data['userID'], data["name"], data["password"], data["age"], data['account_type'], data['tags'][0][0], data['tags'][1][0], data['tags'][2][0])
     else:
         return {}
     conn.execute(query)
     conn.close()
-    print(query)
-    print(data['userID'])
     return data
 
 
