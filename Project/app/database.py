@@ -282,6 +282,13 @@ def insert_user(data: dict) -> None:
     else:
         return {}
     conn.execute(query)
+    query_results = conn.execute(
+        "Select count(userID) from account_info where userID=-1 or userID=-2;").fetchall()
+    count = query_results[0][0]
+    if count > 0:
+        print("reg fail***************************")
+        conn.close()
+        return {}
     print("asdsdsadsdsadsda\n")
     conn.close()
     return data

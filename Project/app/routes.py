@@ -8,6 +8,7 @@ from app import database as db_helper
 # global variables to keep track of user
 # userloged = False
 
+
 @app.route("/delete/<int:movie_id>", methods=['POST'])
 def delete(movie_id):
     """ recieved post requests for entry delete """
@@ -182,12 +183,16 @@ def registerpage():
 def register():
     try:
         data = request.get_json()
-        db_helper.insert_user(data)
-        session.clear()
-        session['userlogged'] = True
-        user = db_helper.search_user_by_id(data)
-        session['user'] = user
-        result = {'success': True, 'response': 'Done'}
+        ret = db_helper.insert_user(data)
+        if ret == {}:
+            session.clear()
+            session['userlogged'] = False
+        else:
+            session.clear()
+            session['userlogged'] = True
+            user = db_helper.search_user_by_id(data)
+            session['user'] = user
+            result = {'success': True, 'response': 'Done'}
     except:
         result = {'success': False, 'response': 'Something went wrong'}
     return jsonify(result)
