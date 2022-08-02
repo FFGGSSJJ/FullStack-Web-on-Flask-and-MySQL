@@ -168,7 +168,6 @@ def verify_user():
             print("User found")
             print(user['userID'])
             print(user['account_passwd'])
-            render_template('userpage.html', items=user)
             result = {'success': True, 'response': 'Done'}
     except:
         result = {'success': False, 'response': 'Something went wrong'}
