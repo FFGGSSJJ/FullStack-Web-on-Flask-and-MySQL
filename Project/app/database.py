@@ -282,7 +282,9 @@ def insert_user(data: dict) -> None:
             data['userID'], data["name"], data["password"], data["age"], data['account_type'], data['tags'][0], data['tags'][1], data['tags'][2])
     else:
         return {}
+    print(query)
     conn.execute(query)
+    print("checkexe1")
     query_results = conn.execute(
         "Select count(userID) from account_info where userID=-1 or userID=-2;").fetchall()
     count = query_results[0][0]
