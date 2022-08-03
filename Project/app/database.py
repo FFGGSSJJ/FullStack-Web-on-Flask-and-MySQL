@@ -9,6 +9,8 @@ from math import *
 genre_dict = {16: "Animation", 35: "Comedy", 10751: "Family", 12: "Adventure", 28: "Action", 53: "Thriller", 18: "Drama", 10749: "Romance", 80: "Crime", 9648: "Mystery", 27: "Horror", 99: "Documentary", 10769: "Foreign", 878: "Science Fiction", 14: "Fantasy", 36: "History", 10752: "War", 10402: "Music", 37: "Western", 10770: "TV Movie",
               11176: "Carousel Productions", 11602: "Vision View Entertainment", 29812: "Telescene Film Group Productions", 2883: "Aniplex", 7759: "GoHands", 7760: "BROSTA TV", 7761: "Mardock Scramble Production Committee", 33751: "Sentai Filmworks", 17161: "Odyssey Media", 18012: "Pulser Productions", 18013: "Rogue State", 23822: "The Cartel"}
 
+recommendations_dict = {}
+
 
 def fetch_movie() -> list:
     """Reads all tasks listed in the todo table
@@ -324,7 +326,7 @@ def genre_filter(data: dict) -> list:
         return {}
     if len(genre_list) == 1:
         query_results = conn.execute(
-            "Select genre_id from genre where genre_name = {};".format(genre_list[0])).fetchall()
+            "Select genre_id from genre where genre_name = '{}';".format(genre_list[0])).fetchall()
     else:
         query_results = conn.execute(
             "Select genre_id from genre where genre_name in {};".format(tuple(genre_list))).fetchall()
@@ -621,9 +623,13 @@ def fetch_recommendations(user_id) -> list:
         A list
     """
     recommendations = []
-    data, mode = fetch_prerecommendations(user_id)
-    if mode == 1:
-        return data
+    if user_id in recommendations_dict.keys():
+        data = recommendations_dict[user_id]
+    else:
+        data, mode = fetch_prerecommendations(user_id)
+        if mode == 1:
+            return data
+        recommendations_dict[user_id] = data
     top_user = similar_users(user_id, data)[0][0]
     items = data[top_user]
 
