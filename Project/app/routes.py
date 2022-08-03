@@ -144,6 +144,7 @@ def advanced_result_1():
 def homepage():
     """ returns rendered homepage """
     flag = session.get('userlogged')
+    print(flag)
     if (flag):
         data = session.get('user')
         recommend = db_helper.fetch_recommendations(data["userID"])
@@ -201,6 +202,7 @@ def register():
 @app.route("/verify_user", methods=['POST'])
 def verify_user():
     try:
+        session.clear()
         data = request.get_json()
         user = db_helper.search_user(data)
         if user == {}:
