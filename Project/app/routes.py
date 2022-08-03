@@ -106,7 +106,7 @@ def search_page():
 def userpage():
     """ display user page """
     userinfo = session.get('user')
-    print(userinfo['name'])
+    # print(userinfo['name'])
     return render_template("userpage.html", user=userinfo)
 
 
@@ -205,6 +205,7 @@ def verify_user():
         user = db_helper.search_user(data)
         if user == {}:
             print("User not found")
+            session.clear()
             session['userlogged'] = False
             result = {'success': False, 'response': 'User not found'}
         else:
