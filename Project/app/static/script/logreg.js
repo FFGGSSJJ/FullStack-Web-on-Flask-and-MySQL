@@ -48,6 +48,7 @@ $(document).ready(function () {
                 if (res.success) {
                     location.href = '/';
                 } else {
+                    $.fn.myFunction();
                     location.reload();
                     console.log('User not found');
                 }
@@ -57,6 +58,10 @@ $(document).ready(function () {
             }
         });
     });
+
+    $.fn.myFunction = function() {
+        alert('Register Failed');
+    }
 
     
 });
