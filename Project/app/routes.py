@@ -123,6 +123,12 @@ def movieintro():
     user = session.get('user', None)
     data = session.get('movie_info', None)
     comments = session.get('comment', None)
+    if user == None:
+        print('1*****************')
+    if data == None:
+        print('2*****************')
+    if data == None:
+        print('3*****************')
     return render_template("movieintro.html", uid=user['userID'], id=data['movie_id'], title=data['title'], overview=data['overview'], poster_path=data['poster_path'], comment=comments)
 
 
@@ -233,7 +239,7 @@ def genre_filter():
     """ returns rendered rootpage """
     data = request.get_json()
     items = db_helper.genre_filter(data)
-    session.clear()
+    # session.clear()
     session['movie_list'] = items
     searched_list = session.get('movie_list', None)
     return render_template("search_result.html", items=searched_list)
