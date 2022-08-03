@@ -290,6 +290,8 @@ def insert_user(data: dict) -> None:
     count = query_results[0][0]
     if count > 0:
         print("reg fail***************************")
+        query_results = conn.execute(
+            "delete from account_info where userID<0;").fetchall()
         conn.close()
         return {}
     print("asdsdsadsdsadsda\n")
@@ -318,10 +320,14 @@ def genre_filter(data: dict) -> list:
     for genre in data:
         if data[genre] == 1:
             genre_list.append(genre)
-    print("Select genre_id from genre where genre_name in {};".format(
-        tuple(genre_list)))
-    query_results = conn.execute(
-        "Select genre_id from genre where genre_name in {};".format(tuple(genre_list))).fetchall()
+    if len(genre_list) == 0:
+        return {}
+    if len(genre_list) == 1:
+        query_results = conn.execute(
+            "Select genre_id from genre where genre_name = {};".format(genre_list[0])).fetchall()
+    else:
+        query_results = conn.execute(
+            "Select genre_id from genre where genre_name in {};".format(tuple(genre_list))).fetchall()
     genre_id_list = [result[0] for result in query_results]
     if len(genre_id_list) == 1:
         query_results = conn.execute(
@@ -524,30 +530,24 @@ def search_movie_by_id(data: dict) -> None:
     return item
 
 
-def fetch_prerecommendations(userid) -> dict:
-    """Read all similar users based on tags
-    Returns:
-        A list of dictionaries{userID:{title:rating}}
-    """
-
+def sp_rcmd(userid):
+    print('sp_rcmd')
     conn = db.connect()
-    query = "call recommend({});".format(userid)
-    print("call recommend({})".format(userid))
-    query_results = conn.execute(query).fetchall()
-    query = "select * from recommend_table limit 10;"
-    query_results = conn.execute(query).fetchall()
-    print("\n\n\n\n\n")
-    print(query_results)
-    # ---------changes------
-    query_userid = [q[0] for q in query_results]
-    if query_results == [] or userid not in query_userid:
+    genre_dict = {}
+    user = search_user_by_id({'userID': userid})
+    for tag in user.keys():
+        if tag == "tag1" or tag == "tag2" or tag == "tag3":
+            if user[tag] != '':
+                genre_dict[user[tag]] = 1
+    if genre_dict == {}:
         # ----------------------
         query_results = conn.execute(
             "Select * from movie_info order by popularity desc LIMIT 20;").fetchall()
         movie_list = []
         print("\n\n****************\n\n\n")
         print(query_results)
-        query_results = query_results[11:]
+        if len(query_results) > 10:
+            query_results = query_results[10:]
         for result in query_results:
             query = conn.execute(
                 "Select genre_id from movie_genre where movie_id = '{}';".format(result[0])).fetchall()
@@ -572,8 +572,31 @@ def fetch_prerecommendations(userid) -> dict:
                 "genres": genre_list
             }
             movie_list.append(item)
-            conn.close()
-            return movie_list, 1
+        conn.close()
+        return movie_list, 1
+    else:
+        movie_list = genre_filter(genre_dict)
+        conn.close()
+        return movie_list, 1
+
+
+def fetch_prerecommendations(userid) -> dict:
+    """Read all similar users based on tags
+    Returns:
+        A list of dictionaries{userID:{title:rating}}
+    """
+
+    conn = db.connect()
+    query = "call recommend({});".format(userid)
+    print("call recommend({});".format(userid))
+    conn.execute(query)
+    query = "select * from recommend_table;"
+    query_results = conn.execute(query).fetchall()
+    # ---------changes------
+    query_userid = [q[0] for q in query_results]
+    if query_results == [] or userid not in query_userid:
+        conn.close()
+        return sp_rcmd(userid)
     conn.close()
     pre_recommendations = {}
     for result in query_results:
@@ -601,7 +624,7 @@ def fetch_recommendations(user_id) -> list:
     data, mode = fetch_prerecommendations(user_id)
     if mode == 1:
         return data
-    top_user = similar_users(user_id)[0][0]
+    top_user = similar_users(user_id, data)[0][0]
     items = data[top_user]
 
     for item in items.keys():
@@ -612,7 +635,11 @@ def fetch_recommendations(user_id) -> list:
     conn = db.connect()
     recommendation_list = []
     i = 0
+    print('(*******)')
     print(recommendations)
+    if recommendations == []:
+        conn.close()
+        return sp_rcmd(user_id)[0]
     for single in recommendations:
         if i >= 10:
             break
@@ -647,13 +674,12 @@ def fetch_recommendations(user_id) -> list:
     return recommendation_list
 
 
-def Euclidean(user1, user2):
+def Euclidean(user1, user2, data):
     """Reads the userID in prerecommendations dict
     Returns:
         A value shows the similarity
     """
-    print(user1)
-    data = fetch_prerecommendations(user1)
+    # data, value = fetch_prerecommendations(user1)
     user1_data = data[user1]
     user2_data = data[user2]
     distance = 0
@@ -665,16 +691,16 @@ def Euclidean(user1, user2):
     return 1 / (1 + sqrt(distance))
 
 
-def similar_users(userID):
+def similar_users(userID, data):
     """Reads the similarity value of userID stored in dict
     Returns:
         A list of tuples
     """
     res = []
-    data = fetch_prerecommendations(userID)
+    # data, value = fetch_prerecommendations(userID)
     for user2 in data.keys():
         if not user2 == userID:
-            similarity = Euclidean(userID, user2)
+            similarity = Euclidean(userID, user2, data)
             res.append((user2, similarity))
     res.sort(key=lambda val: val[1])
     return res[:10]

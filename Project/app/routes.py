@@ -207,6 +207,7 @@ def verify_user():
         user = db_helper.search_user(data)
         if user == {}:
             print("User not found")
+            session.clear()
             session['userlogged'] = False
             result = {'success': False, 'response': 'User not found'}
         else:
