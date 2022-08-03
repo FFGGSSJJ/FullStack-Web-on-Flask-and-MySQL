@@ -29,6 +29,14 @@ CREATE TABLE recommend_table(
 
 OPEN usesr_cursor;
 
+INSERT INTO recommend_table 
+(SELECT watch_list.userID, temp.average_rating, watch_list.movie_id, temp.title 
+FROM watch_list join
+(SELECT c.movie_id,m.title, avg(c.rating) as average_rating
+    FROM comments c join movie_info m on c.movie_id = m.movie_id
+    GROUP BY c.movie_id) as temp on watch_list.movie_id = temp.movie_id
+WHERE watch_list.userID = search_userID);
+
 REPEAT 
     FETCH usesr_cursor INTO curr_user;
     
@@ -52,7 +60,5 @@ END REPEAT;
 
 CLOSE usesr_cursor;
 
-select search_userID, movie_id
-from recommend_table
 
 END
