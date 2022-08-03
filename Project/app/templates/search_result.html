@@ -49,6 +49,9 @@
                     <td>{{item.release_date}}</td>
                     <td>{{item.overview}}</td>
                     <td>{{item.tagline}}</td>
+
+                    <td><button class="btn btn-outline-secondary btn-sm check" data-source="{{item.movie_id}}"
+                        type="button"><i class="fa fa-check fa-1" aria-hidden="true"></i></button></td>
                 </tr>
                 {% endfor %}
 

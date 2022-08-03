@@ -5,6 +5,9 @@ from flask import render_template, request, jsonify, session
 from app import app
 from app import database as db_helper
 
+# global variables to keep track of user
+# userloged = False
+
 
 @app.route("/delete/<int:movie_id>", methods=['POST'])
 def delete(movie_id):
@@ -85,6 +88,14 @@ def logincheck():
 
 
 # Page routes
+@app.route("/watchlist_page")
+def watchlist_page():
+    """ display watchlist """
+    data = session.get('user')
+    items = db_helper.fetch_watch_by_userid(data)
+    return render_template("watchlist.html", watchlist=items)
+
+
 @app.route("/search_page")
 def search_page():
     """ display search result """
@@ -94,7 +105,9 @@ def search_page():
 @app.route("/userpage")
 def userpage():
     """ display user page """
-    return render_template("userpage.html")
+    userinfo = session.get('user')
+    # print(userinfo['name'])
+    return render_template("userpage.html", user=userinfo)
 
 
 @app.route("/search_result")
@@ -103,11 +116,15 @@ def search_result():
     searched_list = session.get('movie_list', None)
     return render_template("search_result.html", items=searched_list)
 
+
 @app.route("/movieintro")
 def movieintro():
     """ display movie intro page """
+    user = session.get('user', None)
     data = session.get('movie_info', None)
-    return render_template("movieintro.html", title=data['title'], overview=data['overview'], poster_path=data['poster_path'])
+    comments = session.get('comment', None)
+    return render_template("movieintro.html", uid=user['userID'], id=data['movie_id'], title=data['title'], overview=data['overview'], poster_path=data['poster_path'], comment=comments)
+
 
 @app.route("/adv_result_0")
 def advanced_result_0():
@@ -126,11 +143,17 @@ def advanced_result_1():
 @app.route("/")
 def homepage():
     """ returns rendered homepage """
-    items = db_helper.fetch_movie()
-    return render_template("homepage.html", items=items)
+    flag = session.get('userlogged')
+    if (flag):
+        data = session.get('user')
+        recommend = db_helper.fetch_recommendations(data["userID"])
+        rankitems = db_helper.fetch_movie_ranking()
+        return render_template("homepage.html", ranking=rankitems, recommend=recommend)
+    else:
+        return render_template("login.html")
 
 
-@app.route("/")
+@app.route("/homeranking")
 def homepage_ranking():
     """ returns rendered homepage """
     items = db_helper.fetch_movie_ranking()
@@ -156,15 +179,20 @@ def registerpage():
     return render_template("register.html")
 
 
-@app.route("/register", methods=['POST'])
+@app.route("/registerinfo", methods=['POST'])
 def register():
     try:
         data = request.get_json()
-        db_helper.insert_user(data)
-        session.clear()
-        session['user'] = data
-        result = {'success': True, 'response': 'Done',
-                  'userid': data['userID']}
+        ret = db_helper.insert_user(data)
+        if ret == {}:
+            session.clear()
+            session['userlogged'] = False
+        else:
+            session.clear()
+            session['userlogged'] = True
+            user = db_helper.search_user_by_id(data)
+            session['user'] = user
+            result = {'success': True, 'response': 'Done'}
     except:
         result = {'success': False, 'response': 'Something went wrong'}
     return jsonify(result)
@@ -177,13 +205,18 @@ def verify_user():
         user = db_helper.search_user(data)
         if user == {}:
             print("User not found")
+            session.clear()
+            session['userlogged'] = False
             result = {'success': False, 'response': 'User not found'}
         else:
             print("User found")
             print(data['userID'])
+            print(session.get('userlogged'))
             items = db_helper.search_user_by_id(data)
+            print("asasa")
             session.clear()
             session['user'] = items
+            session['userlogged'] = True
             result = {'success': True, 'response': 'Done'}
     except:
         result = {'success': False, 'response': 'Something went wrong'}
@@ -244,8 +277,9 @@ def create_watchlist_item():
 @app.route("/user_watchlist", methods=['POST'])
 def get_watchlist():
     data = request.get_json()
-    items = db_helper.fetch_watch_by_userid(data)
-    return render_template("user_watchlist.html", items=items)
+    session['watchlist'] = db_helper.fetch_watch_by_userid(data)
+    result = {'success': True, 'response': 'Done'}
+    return jsonify(result)
 
 # get userinfo by id
 # input is the user id
@@ -263,7 +297,16 @@ def get_userinfo_by_user():
 @app.route("/movie_info", methods=['POST'])
 def get_movie_info():
     data = request.get_json()
-    print("azxzasas")
-    items = db_helper.search_movie_by_id(data)
-    session['movie_info'] = items
-    return render_template("movieintro.html")
+    session['movie_info'] = db_helper.search_movie_by_id(data)
+    session['comment'] = db_helper.fetch_comment_by_movieid(data)
+    result = {'success': True, 'response': 'Done'}
+    return jsonify(result)
+
+
+@app.route("/get_recommend", methods=['POST'])
+def get_recommend():
+    data = request.get_json()
+    print("vevrv")
+    session['recommend'] = db_helper.fetch_recommendations(data["userID"])
+    result = {'success': True, 'response': 'Done'}
+    return jsonify(result)

@@ -3,7 +3,7 @@
 <html>
 
 <head>
-    <title>iMovie</title>
+    <title>iMovie's UserFavorite</title>
 
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -28,7 +28,7 @@
     <div class="navbar">
         <div class="navbar-container">
             <div class="logo-container">
-                <h1 class="logo">iMovie' Explore</h1>
+                <h1 class="logo">iMovie' Watchlist</h1>
             </div>
             <div class="menu-container">
                 <ul class="menu-list">
@@ -46,42 +46,35 @@
         <i type="button" class="left-menu-icon fas fa-bookmark"></i>
     </div>
 
-    <div class="search-region">
-        <input type="text" class="field w-input" maxlength="256" name="input_movie"
-            data-name="movie_name" placeholder="Enter movie name to search" id="field" required="" />
-        <input type="submit" value="Search" data-wait="Please wait..." class="button w-button" id="search-btn"/>
+    <!-- Main Section -->
+    <div class="featured-content-list" style="background: linear-gradient(to bottom, #ddd0b7dd 10%, #ddd0b7 100%), url('static/img/background.jpg') no-repeat fixed;
+    -webkit-background-size: cover; -moz-background-size: cover; -o-background-size: cover; background-size: cover;">
+        <div class="featured-title-list">Find Movies</div>
+        <p class="featured-desc-list">The emotions we feel when we're engaged by a movie is what makes us come back for more.</p>
     </div>
 
-    <div class="checkrow">
-        <div class="checkbox">
-            <input type="checkbox" id="Animation">
-            <span class="label">Animation</span>
+    <!-- Recommended Movie Section -->
+    <div class="movie-list-container">
+        <h1 class="movie-list-title">YOUR OWN LIST</h1>
+        <p class="movie-list-subtitle">Create by adding. <a href="/">Explore Now!</a></p>
+        <div class="movie-list-wrapper">
+            <div class="movie-list">
+                {% for item in watchlist %}
+                <div class="movie-list-item" id="{{item.movie_id}}">
+                    <img class="movie-list-item-img" src="{{item.poster_path}}" alt="">
+                    <span class="movie-list-item-title">{{item.title}}</span>
+                    <span id="movie-label">{{item.movie_id}}</span>
+                    <button class="movie-list-item-button" data-movieid="{{item.movie_id}}">Check</button>
+                </div>
+                {% endfor %}
+            </div>
         </div>
-        <div class="checkbox">
-            <input type="checkbox" id="Comedy">
-            <span class="label">Comedy
-            </span>
-        </div>
-        <div class="checkbox">
-            <input type="checkbox" id="Adventure">
-            <span class="label">Adventure
-            </span>
-        </div>
-        <div class="checkbox">
-            <input type="checkbox" id="Action">
-            <span class="label">Action
-            </span>
-        </div>
-        <div class="checkbox">
-            <input type="checkbox" id="Romance">
-            <span class="label">Romance
-            </span>
-        </div>
-        <div class="checkbox">
-            <input type="checkbox" id="War">
-            <span class="label">War
-            </span>
-        </div>
+    </div>
+
+
+    <div class="options">
+        <a href="/advancedop">Advanced Operations</a>
+        <a href="/login">Login</a>
     </div>
 
 </body>

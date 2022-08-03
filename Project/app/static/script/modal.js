@@ -173,6 +173,27 @@ $(document).ready(function () {
         });
     });
 
+    // function of check button
+    $('.check').click(function () {
+        console.log('Check clicked');
+        const id = $(this).data('source')
+        $.ajax({
+            type: 'POST',
+            url: '/movie_info',
+            contentType: 'application/json;charset=UTF-8',
+            data: JSON.stringify({
+                'movie_id': id
+            }),
+            success: function (res) {
+                console.log(res.response)
+                location.href = '/movieintro';
+            },
+            error: function () {
+                console.log('Error');
+            }
+        });
+    });
+
 // functions in Homepage
     // sidebar function
     $('.fa-search').click(function () {
@@ -192,7 +213,7 @@ $(document).ready(function () {
 
     $('.fa-bookmark').click(function () {
         console.log('Bookmark page clicked');
-        location.href = '/';
+        location.href = '/watchlist_page';
     });
 
 
@@ -207,6 +228,37 @@ $(document).ready(function () {
             contentType: 'application/json;charset=UTF-8',
             data: JSON.stringify({
                 'movie_id': id
+            }),
+            success: function (res) {
+                console.log(res.response)
+                location.href = '/movieintro';
+            },
+            error: function () {
+                console.log('Error');
+            }
+        });
+    });
+
+    //function of logout button
+    $('#logoutbtn').click(function () {
+        console.log('logout clicked');
+        location.href = '/login';
+    });
+
+    // function of add list item button
+    $('#addfavbtn').click(function () {
+        console.log('addlist clicked');
+        console.log($(this).data('movie'))
+        console.log($(this).data('user'))
+        $.ajax({
+            type: 'POST',
+            url: '/create_watchlist_item',
+            contentType: 'application/json;charset=UTF-8',
+            data: JSON.stringify({
+                'userID': $(this).data('user'),
+                'movie_id': $(this).data('movie'),
+                'watch_id': 0,
+                'watch_add_date': 0
             }),
             success: function (res) {
                 console.log(res.response)

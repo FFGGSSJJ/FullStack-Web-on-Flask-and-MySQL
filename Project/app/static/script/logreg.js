@@ -31,7 +31,7 @@ $(document).ready(function () {
         console.log('register clicked');
         $.ajax({
             type: "POST",
-            url: "/register",
+            url: "/registerinfo",
             contentType: "application/json; charset=utf-8",
             data: JSON.stringify({
                 'name': $('#regname').val(),
@@ -45,9 +45,7 @@ $(document).ready(function () {
                 'War': $('#War').is(":checked") ? 1:0
             }),
             success: function (res) {
-                console.log(res.userid)
                 if (res.success) {
-                    console.log(res.userid)
                     location.href = '/';
                 } else {
                     location.reload();

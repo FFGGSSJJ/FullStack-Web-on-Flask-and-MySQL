@@ -28,7 +28,7 @@
     <div class="navbar">
         <div class="navbar-container">
             <div class="logo-container">
-                <h1 class="logo">iMovie</h1>
+                <h1 class="logo">iMovie' Userpage</h1>
             </div>
             <div class="menu-container">
                 <ul class="menu-list">
@@ -47,20 +47,15 @@
     </div>
 
     <!-- Main Section -->
-    <div class="featured-content" style="background: linear-gradient(to bottom, #ddd0b7dd 10%, #ddd0b7 100%), url('static/img/background.jpg');">
-        <div class="featured-title">For Movie</div>
-        <p class="featured-desc">People go to watch the movies to feel and to escape from reality, movies transport us to a different time, place or situation we may never be able to experience. The emotions we feel when we're engaged by a movie is what makes us come back for more</p>
+    <div class="featured-content-user" style="background: linear-gradient(to bottom, #ddd0b7bd , #ddd0b7 100%), url('static/img/wright.jpg') no-repeat fixed;
+    -webkit-background-size: cover; -moz-background-size: cover; -o-background-size: cover; background-size: cover;">
+        <div class="featured-title-user">Hello, {{user.account_name}}!</div>
+        <p class="featured-desc-user">People go to watch the movies to feel and to escape from reality, movies transport us to a different time, place or situation we may never be able to experience.</p>
+        <p class="featured-desc-user">User ID: {{user.userID}}</p>
+        <p class="featured-desc-user">Your Favor: {{user.tag1}}, {{user.tag2}}, {{user.tag3}}. Check your <a href="/watchlist_page">watch list</a>!</p>
+        <p class="featured-desc-user">If you are root user, click <a href="/advancedop" >here</a> for advanced operations.</p>
+        <button id="logoutbtn">Logout</button>
     </div>
-    
-
-    
-
-
-    <div class="options">
-        <a href="/advancedop">Advanced Operations</a>
-        <a href="/login">Login</a>
-    </div>
-
 </body>
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>

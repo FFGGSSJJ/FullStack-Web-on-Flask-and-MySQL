@@ -28,7 +28,7 @@
     <div class="navbar">
         <div class="navbar-container">
             <div class="logo-container">
-                <h1 class="logo">iMovie</h1>
+                <h1 class="logo">iMovie' Homepage</h1>
             </div>
             <div class="menu-container">
                 <ul class="menu-list">
@@ -47,7 +47,8 @@
     </div>
 
     <!-- Main Section -->
-    <div class="featured-content" style="background: linear-gradient(to bottom, #ddd0b7dd 10%, #ddd0b7 100%), url('static/img/background.jpg');">
+    <div class="featured-content" style="background: linear-gradient(to bottom, #ddd0b7dd 10%, #ddd0b7 100%), url('static/img/background.jpg') no-repeat fixed;
+    -webkit-background-size: cover; -moz-background-size: cover; -o-background-size: cover; background-size: cover;">
         <div class="featured-title">For Movies</div>
         <p class="featured-desc">The emotions we feel when we're engaged by a movie is what makes us come back for more.</p>
     </div>
@@ -58,7 +59,7 @@
         <p class="movie-list-subtitle">Based on your favorite</p>
         <div class="movie-list-wrapper">
             <div class="movie-list">
-                {% for item in items %}
+                {% for item in recommend %}
                 <div class="movie-list-item" id="{{item.movie_id}}">
                     <img class="movie-list-item-img" src="{{item.poster_path}}" alt="">
                     <span class="movie-list-item-title">{{item.title}}</span>
@@ -76,11 +77,14 @@
         <p class="movie-list-subtitle">Most people's favorite</p>
         <div class="movie-list-wrapper">
             <div class="movie-list">
-                <div class="movie-list-item">
-                    <img class="movie-list-item-img" src="static/img/background.jpg" alt="">
-                    <span class="movie-list-item-title">Breakfast at Tiffany's</span>
-                    <button class="movie-list-item-button">Check</button>
+                {% for item in ranking %}
+                <div class="movie-list-item" id="{{item.movie_id}}">
+                    <img class="movie-list-item-img" src="{{item.poster_path}}" alt="">
+                    <span class="movie-list-item-title">{{item.title}}</span>
+                    <span id="movie-label">{{item.movie_id}}</span>
+                    <button class="movie-list-item-button" data-movieid="{{item.movie_id}}">Check</button>
                 </div>
+                {% endfor %}
             </div>
         </div>
     </div>

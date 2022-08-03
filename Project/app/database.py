@@ -3,6 +3,8 @@
 from app import db
 from datetime import datetime
 import requests
+import pandas as pd
+from math import *
 
 genre_dict = {16: "Animation", 35: "Comedy", 10751: "Family", 12: "Adventure", 28: "Action", 53: "Thriller", 18: "Drama", 10749: "Romance", 80: "Crime", 9648: "Mystery", 27: "Horror", 99: "Documentary", 10769: "Foreign", 878: "Science Fiction", 14: "Fantasy", 36: "History", 10752: "War", 10402: "Music", 37: "Western", 10770: "TV Movie",
               11176: "Carousel Productions", 11602: "Vision View Entertainment", 29812: "Telescene Film Group Productions", 2883: "Aniplex", 7759: "GoHands", 7760: "BROSTA TV", 7761: "Mardock Scramble Production Committee", 33751: "Sentai Filmworks", 17161: "Odyssey Media", 18012: "Pulser Productions", 18013: "Rogue State", 23822: "The Cartel"}
@@ -10,7 +12,6 @@ genre_dict = {16: "Animation", 35: "Comedy", 10751: "Family", 12: "Adventure", 2
 
 def fetch_movie() -> list:
     """Reads all tasks listed in the todo table
-
     Returns:
         A list of dictionaries
     """
@@ -50,7 +51,6 @@ def fetch_movie() -> list:
 
 def fetch_movie_ranking() -> list:
     """Reads all tasks listed in the todo table
-
     Returns:
         A list of dictionaries
     """
@@ -90,11 +90,9 @@ def fetch_movie_ranking() -> list:
 
 def update_movie_entry(movie_id: int, data: dict) -> None:
     """Updates task description based on given `task_id`
-
     Args:
         task_id (int): Targeted task_id
         text (str): Updated description
-
     Returns:
         None
     """
@@ -117,7 +115,6 @@ def update_movie_entry(movie_id: int, data: dict) -> None:
 
 def insert_new_movie(data: dict) -> int:
     """Insert new movie.
-
     Returns: The movie_id for the inserted entry
     """
 
@@ -147,7 +144,7 @@ def remove_movie_by_id(movie_id: int) -> None:
 def search_movie_by_title(data: dict) -> list:
     """ Search entries based on title """
     conn = db.connect()
-    query_results = conn.execute('Select * From movie_info where title like "%%{}%%" LIMIT 10;'.format(
+    query_results = conn.execute('Select * From movie_info where title like "%%{}%%" LIMIT 5;'.format(
         data['title'])).fetchall()
     # if (data['movie_id'] != NULL):
     #     query = 'Select * From movie_info where movie_id = {} LIMIT 40;'.format(data['movie_id'])
@@ -265,14 +262,15 @@ def insert_user(data: dict) -> None:
     i = 0
     genre_list = []
     for genre, value in data.items():
-        if genre == "name" or genre == "password" or genre == "age":
+        if genre == "name" or genre == "password" or genre == "age" or genre == 'account_type' or genre == 'userID':
             continue
         if value == 1 and i < 3:
             genre_list.append(genre)
             i = i+1
     print(genre_list)
-    data['tags'] = [get_tag(genre) for genre in genre_list]
+    data['tags'] = [get_tag(genre)[0] for genre in genre_list]
     print(data['tags'])
+    print(len(genre_list))
     if len(genre_list) == 1:
         query = 'Insert Into account_info (userID, account_name, account_passwd, age, account_type, tag1) VALUES ({}, "{}", "{}",{},{},{});'.format(
             data['userID'], data["name"], data["password"], data["age"], data['account_type'], data['tags'][0])
@@ -285,9 +283,17 @@ def insert_user(data: dict) -> None:
     else:
         return {}
     conn.execute(query)
+    query_results = conn.execute(
+        "Select count(userID) from account_info where userID=-1 or userID=-2;").fetchall()
+    count = query_results[0][0]
+    if count > 0:
+        print("reg fail***************************")
+        query_results = conn.execute(
+            "delete from account_info where userID<0;").fetchall()
+        conn.close()
+        return {}
+    print("asdsdsadsdsadsda\n")
     conn.close()
-    print(query)
-    print(data['userID'])
     return data
 
 
@@ -312,10 +318,14 @@ def genre_filter(data: dict) -> list:
     for genre in data:
         if data[genre] == 1:
             genre_list.append(genre)
-    print("Select genre_id from genre where genre_name in {};".format(
-        tuple(genre_list)))
-    query_results = conn.execute(
-        "Select genre_id from genre where genre_name in {};".format(tuple(genre_list))).fetchall()
+    if len(genre_list) == 0:
+        return {}
+    if len(genre_list) == 1:
+        query_results = conn.execute(
+            "Select genre_id from genre where genre_name = {};".format(genre_list[0])).fetchall()
+    else:
+        query_results = conn.execute(
+            "Select genre_id from genre where genre_name in {};".format(tuple(genre_list))).fetchall()
     genre_id_list = [result[0] for result in query_results]
     if len(genre_id_list) == 1:
         query_results = conn.execute(
@@ -354,7 +364,6 @@ def genre_filter(data: dict) -> list:
 
 def insert_comment(data: dict) -> int:
     """Insert new comment.
-
     Returns: The comment ID for the inserted entry
     """
 
@@ -381,7 +390,7 @@ def fetch_comment_by_movieid(data: dict) -> list:
     conn = db.connect()
     print("Starting comment")
     query_results = conn.execute(
-        "select a.account_name, c.rating, c.adding_date, c.msg from (Select * from comments where movie_id = '{}') as c natural join account_info as a limit 20;".format(data['movie_id'])).fetchall()
+        "select a.account_name, c.rating, c.adding_date, c.msg from (Select * from comments where movie_id = '{}') as c natural join account_info as a limit 10;".format(data['movie_id'])).fetchall()
     conn.close()
     comments_list = []
     for result in query_results:
@@ -397,7 +406,6 @@ def fetch_comment_by_movieid(data: dict) -> list:
 
 def insert_watch(data: dict) -> int:
     """Insert new comment.
-
     Returns: The comment ID for the inserted entry
     """
 
@@ -406,9 +414,9 @@ def insert_watch(data: dict) -> int:
         "Select max(watch_id) from watch_list;").fetchall()
     watch_id = query_results[0][0] + 1
     data['watch_id'] = watch_id
-    data['watch_add_date'] = datetime.now()
+    data['watch_add_date'] = str(datetime.now())
     value_tuple = tuple([value for value in data.values()])
-    query = 'Insert Into movie_info (userID, movie_id, watch_id, watch_add_date) VALUES {};'.format(
+    query = 'Insert Into watch_list (userID, movie_id, watch_id, watch_add_date) VALUES {};'.format(
         value_tuple)
     conn.execute(query)
     print("Inserting watch by id: {}".format(watch_id))
@@ -425,9 +433,18 @@ def fetch_watch_by_userid(data: dict) -> list:
     print("Starting watch")
     query_results = conn.execute(
         "Select distinct movie_id from watch_list where userID = '{}'limit 20;".format(data['userID'])).fetchall()
+    if (query_results == []):
+        return []
     movie_id_list = [result[0] for result in query_results]
-    query_results = conn.execute(
-        "Select * from movie_info where movie_id in {} limit 20;".format(tuple(movie_id_list))).fetchall()
+    if len(movie_id_list) == 1:
+        query_results = conn.execute(
+            "Select * from movie_info where movie_id = {} limit 20;".format(movie_id_list[0])).fetchall()
+    elif len(movie_id_list) > 1:
+        query_results = conn.execute(
+            "Select * from movie_info where movie_id in {} limit 20;".format(tuple(movie_id_list))).fetchall()
+    else:
+        conn.close()
+        return []
     conn.close()
     movie_list = []
     for result in query_results:
@@ -455,18 +472,26 @@ def fetch_watch_by_userid(data: dict) -> list:
 
 def search_user_by_id(data: dict) -> None:
     conn = db.connect()
-    query = "Select * From account_info Where userID='{}';".format(
+    query = "Select * From account_info Where userID={};".format(
         data["userID"])
+    print(query)
     result = conn.execute(query).fetchall()[0]
+    print(result)
+    genre_list = []
+    for index in result[5:8]:
+        if index != None:
+            genre_list.append(genre_dict[index])
+        else:
+            genre_list.append('')
     user = {
         "userID": result[0],
         "account_name": result[1],
         "account_passwd": result[2],
         "age": result[3],
         "account_type": result[4],
-        "tag1": genre_dict[result[5]],
-        "tag2": genre_dict[result[6]],
-        "tag3": genre_dict[result[7]],
+        "tag1": genre_list[0],
+        "tag2": genre_list[1],
+        "tag3": genre_list[2],
     }
     conn.close()
     return user
@@ -501,3 +526,182 @@ def search_movie_by_id(data: dict) -> None:
     }
     conn.close()
     return item
+
+
+def sp_rcmd(userid):
+    print('sp_rcmd')
+    conn = db.connect()
+    genre_dict = {}
+    user = search_user_by_id({'userID': userid})
+    for tag in user.keys():
+        if tag == "tag1" or tag == "tag2" or tag == "tag3":
+            if user[tag] != '':
+                genre_dict[user[tag]] = 1
+    if genre_dict == {}:
+        # ----------------------
+        query_results = conn.execute(
+            "Select * from movie_info order by popularity desc LIMIT 20;").fetchall()
+        movie_list = []
+        print("\n\n****************\n\n\n")
+        print(query_results)
+        if len(query_results) > 10:
+            query_results = query_results[10:]
+        for result in query_results:
+            query = conn.execute(
+                "Select genre_id from movie_genre where movie_id = '{}';".format(result[0])).fetchall()
+            genre_list = [q[0] for q in query]
+            url = "https://api.themoviedb.org/3/movie/{}?api_key=8265bd1679663a7ea12ac168da84d2e8&language=en-US".format(
+                result[0])
+            data = requests.get(url)
+            data = data.json()
+            poster_path = data['poster_path']
+            full_path = "https://image.tmdb.org/t/p/original/" + poster_path
+            item = {
+                "movie_id": result[0],
+                "title": result[1],
+                "imdb_id": result[2],
+                "release_date": result[3],
+                "overview": result[4],
+                "tagline": result[5],
+                "homepage": result[6],
+                "poster_path": full_path,
+                "popularity": result[8],
+                "revenue": result[9],
+                "genres": genre_list
+            }
+            movie_list.append(item)
+        conn.close()
+        return movie_list, 1
+    else:
+        movie_list = genre_filter(genre_dict)
+        conn.close()
+        return movie_list, 1
+
+
+def fetch_prerecommendations(userid) -> dict:
+    """Read all similar users based on tags
+    Returns:
+        A list of dictionaries{userID:{title:rating}}
+    """
+
+    conn = db.connect()
+    query = "call recommend({});".format(userid)
+    print("call recommend({});".format(userid))
+    conn.execute(query)
+    query = "select * from recommend_table;"
+    query_results = conn.execute(query).fetchall()
+    # ---------changes------
+    query_userid = [q[0] for q in query_results]
+    if query_results == [] or userid not in query_userid:
+        conn.close()
+        return sp_rcmd(userid)
+    conn.close()
+    pre_recommendations = {}
+    for result in query_results:
+        item = [
+            result[0],
+            result[1],
+            result[2],
+            result[3]
+        ]
+        if not item[0] in pre_recommendations.keys():
+            pre_recommendations[item[0]] = {item[2]: item[1]}
+        else:
+            pre_recommendations[item[0]][item[2]] = item[1]
+    return pre_recommendations, 0
+
+# top level fuinction
+
+
+def fetch_recommendations(user_id) -> list:
+    """Read all similar users based on ratings
+    Returns:
+        A list
+    """
+    recommendations = []
+    data, mode = fetch_prerecommendations(user_id)
+    if mode == 1:
+        return data
+    top_user = similar_users(user_id, data)[0][0]
+    items = data[top_user]
+
+    for item in items.keys():
+        if item not in data[user_id].keys():
+            recommendations.append((item, items[item]))
+
+    recommendations.sort(key=lambda val: val[1], reverse=True)
+    conn = db.connect()
+    recommendation_list = []
+    i = 0
+    print('(*******)')
+    print(recommendations)
+    if recommendations == []:
+        conn.close()
+        return sp_rcmd(user_id)[0]
+    for single in recommendations:
+        if i >= 10:
+            break
+        query = "Select * From movie_info Where movie_id='{}';".format(
+            single[0])
+        result = conn.execute(query).fetchall()[0]
+        query_results = conn.execute(
+            "Select genre_id from movie_genre where movie_id = '{}';".format(result[0])).fetchall()
+        genre_list = [q[0] for q in query_results]
+        url = "https://api.themoviedb.org/3/movie/{}?api_key=8265bd1679663a7ea12ac168da84d2e8&language=en-US".format(
+            result[0])
+        data = requests.get(url)
+        data = data.json()
+        poster_path = data['poster_path']
+        full_path = "https://image.tmdb.org/t/p/original/" + poster_path
+        item = {
+            "movie_id": result[0],
+            "title": result[1],
+            "imdb_id": result[2],
+            "release_date": result[3],
+            "overview": result[4],
+            "tagline": result[5],
+            "homepage": result[6],
+            "poster_path": full_path,
+            "popularity": result[8],
+            "revenue": result[9],
+            "genres": genre_list
+        }
+        recommendation_list.append(item)
+        i = i+1
+    conn.close()
+    return recommendation_list
+
+
+def Euclidean(user1, user2, data):
+    """Reads the userID in prerecommendations dict
+    Returns:
+        A value shows the similarity
+    """
+    # data, value = fetch_prerecommendations(user1)
+    user1_data = data[user1]
+    user2_data = data[user2]
+    distance = 0
+
+    for key in user1_data.keys():
+        if key in user2_data.keys():
+
+            distance += pow(float(user1_data[key]) - float(user2_data[key]), 2)
+    return 1 / (1 + sqrt(distance))
+
+
+def similar_users(userID, data):
+    """Reads the similarity value of userID stored in dict
+    Returns:
+        A list of tuples
+    """
+    res = []
+    # data, value = fetch_prerecommendations(userID)
+    for user2 in data.keys():
+        if not user2 == userID:
+            similarity = Euclidean(userID, user2, data)
+            res.append((user2, similarity))
+    res.sort(key=lambda val: val[1])
+    return res[:10]
+
+
+# ---------------------------------------------recommendation end-----------------------------------------------
