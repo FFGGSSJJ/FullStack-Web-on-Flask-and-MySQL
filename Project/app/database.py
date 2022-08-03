@@ -288,6 +288,8 @@ def insert_user(data: dict) -> None:
     count = query_results[0][0]
     if count > 0:
         print("reg fail***************************")
+        query_results = conn.execute(
+            "delete from account_info where userID<0;").fetchall()
         conn.close()
         return {}
     print("asdsdsadsdsadsda\n")
