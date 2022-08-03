@@ -317,14 +317,16 @@ def search_user(data: dict) -> None:
 def genre_filter(data: dict) -> list:
     conn = db.connect()
     print("Starting genre_filter")
-
+    print("??????")
     genre_list = []
     for genre in data:
         if data[genre] == 1:
             genre_list.append(genre)
+    print(genre_list)
     if len(genre_list) == 0:
         return {}
     if len(genre_list) == 1:
+        print("filter done")
         query_results = conn.execute(
             "Select genre_id from genre where genre_name = '{}';".format(genre_list[0])).fetchall()
     else:
@@ -339,9 +341,11 @@ def genre_filter(data: dict) -> list:
             tuple(genre_id_list))).fetchall()
     movie_id_list = [result[0] for result in query_results]
 
+    print("filter act")
     query_results = conn.execute(
-        "Select * from movie_info where movie_id in {} limit 10;".format(tuple(movie_id_list))).fetchall()
+        "Select * from movie_info where movie_id in {} limit 5;".format(tuple(movie_id_list))).fetchall()
     conn.close()
+    print("filter done")
     movie_list = []
     for result in query_results:
         url = "https://api.themoviedb.org/3/movie/{}?api_key=8265bd1679663a7ea12ac168da84d2e8&language=en-US".format(

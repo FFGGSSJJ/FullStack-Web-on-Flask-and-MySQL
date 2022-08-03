@@ -50,6 +50,7 @@ def create():
 def search_movie():
     """ search movie"""
     data = request.get_json()
+    session['movie_list'] = []
     searched_list = db_helper.search_movie_by_title(data)
     session['movie_list'] = searched_list
     result = {'success': True, 'response': 'Done'}
@@ -60,8 +61,12 @@ def search_movie():
 def advanced_0():
     """ advanced_query_0 """
     query_list = db_helper.advanced_query_0()        # advanced one
+    userbackup = session.get('user')
+    userflag = session.get('userlogged')
     session.clear()
     session['adv_query_0'] = query_list
+    session['user'] = userbackup
+    session['userlogged'] = userflag
     result = {'success': True, 'response': 'Done'}
     return jsonify(result)
 
@@ -70,8 +75,12 @@ def advanced_0():
 def advanced_1():
     """ advanced_query_1 """
     query_list = db_helper.advanced_query_1()
+    userbackup = session.get('user')
+    userflag = session.get('userlogged')
     session.clear()
     session['adv_query_1'] = query_list
+    session['user'] = userbackup
+    session['userlogged'] = userflag
     result = {'success': True, 'response': 'Done'}
     return jsonify(result)
 
@@ -237,10 +246,15 @@ def verify_user():
 @app.route("/genre_filter", methods=['POST'])
 def genre_filter():
     """ returns rendered rootpage """
+    print("??????")
     data = request.get_json()
+    userbackup = session.get('user')
+    userflag = session.get('userlogged')
+    session.clear()
     items = db_helper.genre_filter(data)
-    # session.clear()
     session['movie_list'] = items
+    session['user'] = userbackup
+    session['userlogged'] = userflag
     searched_list = session.get('movie_list', None)
     return render_template("search_result.html", items=searched_list)
 
