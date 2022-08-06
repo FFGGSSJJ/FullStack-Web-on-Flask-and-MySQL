@@ -1,4 +1,5 @@
-CREATE PROCEDURE recommend(IN search_userID INT) BEGIN DECLARE done INT default 0;
+CREATE PROCEDURE recommend(IN search_userID INT) 
+BEGIN DECLARE done INT default 0;
 
 DECLARE user_tag1 INT;
 
@@ -26,35 +27,7 @@ DECLARE CONTINUE HANDLER FOR NOT FOUND
 SET
     done = 1;
 
-SET
-    user_tag1 = (
-        SELECT
-            tag1
-        FROM
-            account_info
-        WHERE
-            account_info.userID = search_userID
-    );
-
-SET
-    user_tag2 = (
-        SELECT
-            tag2
-        FROM
-            account_info
-        WHERE
-            account_info.userID = search_userID
-    );
-
-SET
-    user_tag3 = (
-        SELECT
-            tag3
-        FROM
-            account_info
-        WHERE
-            account_info.userID = search_userID
-    );
+select tag1,tag2,tag3 into user_tag1,user_tag2,user_tag3 from account_info where account_info.userID = search_userID;
 
 DROP TABLE IF EXISTS recommend_table;
 
@@ -78,9 +51,7 @@ WHERE watch_list.userID = search_userID);
 REPEAT 
     FETCH usesr_cursor INTO curr_user;
     
-    SET curr_tag1 = (SELECT tag1 FROM account_info WHERE account_info.userID = curr_user);
-    SET curr_tag2 = (SELECT tag2 FROM account_info WHERE account_info.userID = curr_user);
-    SET curr_tag3 = (SELECT tag3 FROM account_info WHERE account_info.userID = curr_user);
+    SELECT tag1,tag2,tag3 into curr_tag1, curr_tag2, curr_tag3 FROM account_info WHERE account_info.userID = curr_user;
 
     
     IF (curr_tag1 in (user_tag1,user_tag2,user_tag3)) and (curr_tag2 in (user_tag1,user_tag2,user_tag3)) and (curr_tag3 in (user_tag1,user_tag2,user_tag3)) THEN
