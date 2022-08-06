@@ -634,7 +634,9 @@ def fetch_recommendations(user_id) -> list:
         if mode == 1:
             return data
         recommendations_dict[user_id] = data
+    print(similar_users(user_id, data))
     top_user = similar_users(user_id, data)[0][0]
+
     items = data[top_user]
 
     for item in items.keys():
