@@ -1,13 +1,20 @@
-# 
-This is a todo list demo designed for CS411. 
-# Tutorial
-<iframe width="560" height="315" src="https://www.youtube.com/embed/sY1lLGe7ECA" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+## Title
 
-A comprehensive writeup is avaliable [here](https://tichung.com/blog/2021/20200323_flask/).
+**uMovies**
+
+# Demo Video
+<iframe width="560" height="315" src="https://mediaspace.illinois.edu/media/t/1_ubn4nkhy" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+
+## Summary
+
+In this project, we aim to create a platform where Movie lovers can easily find movies they like. It is an online database of information mainly related to films, including 45000 movie lists and almost cover all varieties of film genres. Based on user features, eligible films movies will be recommended to them automatically by our system and we also provide them with watchlist to record what they want to watch. If users click on the results of movies searching, they can see basic information of movies, including movie posters, rating information, genres, releasing data and so on.
+
+Our platform also provide a friendly communication environment and relatively fair rating system for movie lovers. Users can exchange their thoughts toward movies freely and other users can see it. Users can write comments, those comments will be saved in our database and users can also find their old comments. 
 
 ## Requirements
+
 ```
-python >= 3.5
+python >= 3.7
 ```
 
 ## Getting started
@@ -24,7 +31,7 @@ flask run
 ## Setting up GCP
 Create a `app.yaml` file in the root folder with the following content:
 ```yaml
-runtime: python38 # or another supported version
+runtime: python37 # or another supported version
 
 instance_class: F1
 
