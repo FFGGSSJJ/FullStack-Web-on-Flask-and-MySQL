@@ -1,6 +1,7 @@
 # su22-cs411-team033-KeyOfSky
 - Private repository for CS411
 - Mainly for storing Porject, Group Activity and Homework codes.
+- 2022.08.09 set this repo as read-only.
 
 ### Authors
 
